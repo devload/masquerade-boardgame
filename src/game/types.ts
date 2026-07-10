@@ -128,6 +128,13 @@ export type CourtEventId =
   | 'mysticFog'
   | 'greatHunt'
 
+export type PendingCommit = {
+  cardId: number
+  seat: SeatId
+  /** Whether this commit was declared as a challenge on an occupied slot (R7+). */
+  challenge?: boolean
+}
+
 export type MatchState = {
   round: number  // 1..8
   phase: MatchPhase
@@ -141,7 +148,13 @@ export type MatchState = {
   festivalBonus: number  // Mask Festival adds +N to every card surface
   activeEvents: CourtEventId[]
   seed: number
+  /** Rolling PRNG cursor — advances each time randomness is consumed. */
+  rng: number
   log: string[]
+  /** Face-down commits collected during 'commit' phase; cleared on reveal. */
+  tempCommits: Partial<Record<Player, PendingCommit>>
+  /** Ruin (몰락) flag set during scoring when exile >= EXILE_LIMIT. */
+  ruined: Partial<Record<Player, boolean>>
 }
 
 export type ScoreBreakdown = {

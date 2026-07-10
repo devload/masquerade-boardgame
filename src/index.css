@@ -7,7 +7,7 @@
 
 @layer base {
   :root {
-    color-scheme: light;
+    color-scheme: dark;
   }
 
   html, body, #root {
@@ -24,11 +24,8 @@
     font-family:
       'Inter', system-ui, sans-serif,
       'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
-    background:
-      radial-gradient(circle at 50% 0%, rgba(232,213,183,0.15) 0, transparent 60%),
-      radial-gradient(circle at 80% 90%, rgba(166,139,168,0.08) 0, transparent 55%),
-      #f5efe3;
-    color: #5b4636;
+    background: #1e1424;
+    color: #f5efe3;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior: none;
@@ -47,27 +44,51 @@
       width: min(420px, 100vw);
       height: min(900px, 100vh);
       max-height: 100vh;
-      border: 1px solid rgba(139,111,71,0.3);
+      border: 1px solid rgba(232,213,183,0.15);
       border-radius: 28px;
       box-shadow:
-        0 0 0 1px rgba(196,139,110,0.12),
-        0 40px 80px -20px rgba(91,70,54,0.35),
-        0 0 60px rgba(196,139,110,0.06);
+        0 0 0 1px rgba(232,213,183,0.06),
+        0 40px 100px -20px rgba(0,0,0,0.7),
+        0 0 80px rgba(139,58,74,0.15);
       overflow: hidden;
       position: relative;
-      background: #f5efe3;
+      background: #1e1424;
     }
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
+    body {
       background:
-        radial-gradient(ellipse 60% 40% at 15% 20%, rgba(232,213,183,0.1), transparent 60%),
-        radial-gradient(ellipse 60% 40% at 85% 80%, rgba(166,139,168,0.08), transparent 60%);
-      z-index: 0;
+        radial-gradient(ellipse 60% 40% at 15% 20%, rgba(232,213,183,0.04), transparent 60%),
+        radial-gradient(ellipse 60% 40% at 85% 80%, rgba(166,139,168,0.05), transparent 60%),
+        #0e0812;
     }
   }
+}
+
+@layer utilities {
+  @keyframes candle-flicker-a {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    20% { opacity: 0.48; transform: scale(0.97); }
+    45% { opacity: 0.72; transform: scale(1.04); }
+    70% { opacity: 0.55; transform: scale(0.99); }
+    88% { opacity: 0.68; transform: scale(1.02); }
+  }
+  @keyframes candle-flicker-b {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    28% { opacity: 0.66; transform: scale(1.05); }
+    55% { opacity: 0.42; transform: scale(0.95); }
+    82% { opacity: 0.58; transform: scale(1.01); }
+  }
+  @keyframes mask-drift {
+    0%, 100% { transform: translateY(0px) rotate(-0.4deg); }
+    50%      { transform: translateY(-4px) rotate(0.3deg); }
+  }
+  @keyframes shimmer-line {
+    0%, 100% { opacity: 0.4; }
+    50%      { opacity: 0.85; }
+  }
+  .animate-candle-a { animation: candle-flicker-a 3.4s ease-in-out infinite; }
+  .animate-candle-b { animation: candle-flicker-b 4.7s ease-in-out infinite; }
+  .animate-mask-drift { animation: mask-drift 6s ease-in-out infinite; }
+  .animate-shimmer-line { animation: shimmer-line 3s ease-in-out infinite; }
 }
 
 @layer utilities {
