@@ -156,9 +156,9 @@ describe('이자벨라 부인 (isabella)', () => {
 
 // ─── L'Ombra ────────────────────────────────────────────────────────
 describe("L'Ombra (lombra)", () => {
-  it('never issues a challenge action before round 7', () => {
+  it('never issues a challenge action before round 5', () => {
     const brain = createAIBrain('lombra', mulberry32(9))
-    for (const round of [1, 2, 5, 6]) {
+    for (const round of [1, 2, 3, 4]) {
       const s = createMatch({ seed: round + 10 })
       s.round = round
       // Force an occupied seat by opponent so challenge could theoretically fire.
@@ -170,11 +170,11 @@ describe("L'Ombra (lombra)", () => {
     }
   })
 
-  it('is capable of issuing a challenge action from round 7 onward', () => {
+  it('is capable of issuing a challenge action from round 5 onward', () => {
     // Force a state where challenging is clearly the best move:
     // - my hand: Royalty (which beats Thief)
     // - seat 2 occupied by opponent Thief
-    // - round 7
+    // - round 5 (challenges now open at the UNMASKING boundary)
     const me = [
       card({ id: 1, identity: 'Royalty', surface: 4 }),
       card({ id: 2, identity: 'Royalty', surface: 4 }),
@@ -191,7 +191,7 @@ describe("L'Ombra (lombra)", () => {
     ]
     const defender = card({ id: 500, identity: 'Thief', surface: 1 })
     const s = scriptedState({
-      round: 7,
+      round: 5,
       me,
       opp,
       courtOverride: (st) => {
@@ -317,17 +317,17 @@ describe('_aiInternals', () => {
     }
   })
 
-  it('legalMoves includes challenges only when allowChallenge && round >= 7', () => {
+  it('legalMoves includes challenges only when allowChallenge && round >= 5', () => {
     const s = createMatch({ seed: 55 })
     s.court[2].placement = { card: s.players.opponent.hand[0], owner: 'opponent' }
-    s.round = 6
-    const movesR6 = _aiInternals.legalMoves(s, 'me', true)
-    expect(movesR6.every((m) => !m.isChallenge)).toBe(true)
-    s.round = 7
-    const movesR7 = _aiInternals.legalMoves(s, 'me', true)
-    expect(movesR7.some((m) => m.isChallenge && m.seat === 3)).toBe(true)
-    const movesR7NoAllow = _aiInternals.legalMoves(s, 'me', false)
-    expect(movesR7NoAllow.every((m) => !m.isChallenge)).toBe(true)
+    s.round = 4
+    const movesR4 = _aiInternals.legalMoves(s, 'me', true)
+    expect(movesR4.every((m) => !m.isChallenge)).toBe(true)
+    s.round = 5
+    const movesR5 = _aiInternals.legalMoves(s, 'me', true)
+    expect(movesR5.some((m) => m.isChallenge && m.seat === 3)).toBe(true)
+    const movesR5NoAllow = _aiInternals.legalMoves(s, 'me', false)
+    expect(movesR5NoAllow.every((m) => !m.isChallenge)).toBe(true)
   })
 
   it('estimateIdentityDistribution sums to ~1', () => {

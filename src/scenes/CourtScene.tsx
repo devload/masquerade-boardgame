@@ -22,7 +22,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { nextRound } from '../game/match.ts'
+import { nextRound, RULES } from '../game/match.ts'
 import { scorePlayer } from '../game/scoring.ts'
 import { duel } from '../game/rps5.ts'
 import { SEATS } from '../game/types.ts'
@@ -174,12 +174,21 @@ export function CourtScene() {
     }, 520)
   }
 
+  const emptyCount = match.court.filter(
+    (s) => !s.placement && !s.pending && !s.alliance,
+  ).length
+  const canChallenge = match.round >= RULES.CHALLENGE_ALLOWED_FROM
+  const courtFull = emptyCount === 0
+
   const guidance = getGuidance({
     phase: match.phase,
     hasCard: selectedCardId != null,
     hasSeat: selectedSeat != null,
     aiThinking,
     brainName,
+    emptyCount,
+    canChallenge,
+    round: match.round,
   })
 
   return (
@@ -234,22 +243,28 @@ export function CourtScene() {
       {/* ── Court grid ──────────────────────────────────────── */}
       <div className="relative z-10 flex-1 flex items-center justify-center px-3 pb-1">
         <div className="grid grid-cols-4 gap-1.5 w-full max-w-[420px]">
-          {match.court.map((slot) => (
-            <SeatCard
-              key={slot.seat}
-              slot={slot}
-              selected={selectedSeat === slot.seat}
-              canSelect={
-                match.phase === 'commit' &&
-                !bothCommitted &&
-                !aiThinking &&
-                selectedCardId != null
-              }
-              onSelect={() =>
-                selectSeat(selectedSeat === slot.seat ? null : slot.seat)
-              }
-            />
-          ))}
+          {match.court.map((slot) => {
+            const readyPhase =
+              match.phase === 'commit' && !bothCommitted && !aiThinking
+            const isEmpty = !slot.placement && !slot.pending && !slot.alliance
+            const isOppOwned = slot.placement?.owner === 'opponent'
+            const canSelectCommit =
+              readyPhase && selectedCardId != null && isEmpty
+            const canSelectChallenge =
+              readyPhase && selectedCardId != null && canChallenge && isOppOwned
+            return (
+              <SeatCard
+                key={slot.seat}
+                slot={slot}
+                selected={selectedSeat === slot.seat}
+                canSelect={canSelectCommit}
+                challengeMode={canSelectChallenge}
+                onSelect={() =>
+                  selectSeat(selectedSeat === slot.seat ? null : slot.seat)
+                }
+              />
+            )
+          })}
         </div>
       </div>
 
@@ -295,19 +310,40 @@ export function CourtScene() {
 
       {/* ── Commit action bar ───────────────────────────────── */}
       <div className="relative z-10 px-4 pb-safe pb-3 pt-2">
-        <button
-          onClick={handleCommit}
-          disabled={!canCommit}
-          className={`w-full py-2.5 rounded-md font-display tracking-[0.3em] text-[12px] uppercase
-                      border transition-all active:scale-[0.98]
-                      ${
-                        canCommit
-                          ? 'border-gold-soft/80 text-parch-cream bg-gradient-to-b from-gold-soft/35 to-rose-deep/25 shadow-gold-glow animate-pulse-soft'
-                          : 'border-parch-cream/10 text-parch-cream/25 bg-black/20 cursor-not-allowed'
-                      }`}
-        >
-          {canCommit ? 'Sigillare ✦ 봉인' : '카드와 자리를 선택하세요'}
-        </button>
+        {(() => {
+          const targetSlot = match.court.find((c) => c.seat === selectedSeat)
+          const commitIsChallenge =
+            !!targetSlot?.placement &&
+            targetSlot.placement.owner === 'opponent' &&
+            canChallenge
+          const activeCopy = commitIsChallenge
+            ? '⚔ Sfida · 챌린지'
+            : 'Sigillare ✦ 봉인'
+          const idleCopy =
+            courtFull && !canChallenge
+              ? '자리가 모두 찼습니다 · 자정을 기다리세요'
+              : courtFull && canChallenge
+                ? '카드와 상대 자리를 선택하세요'
+                : '카드와 자리를 선택하세요'
+          const activeClass = commitIsChallenge
+            ? 'border-rose-deep/80 text-parch-cream bg-gradient-to-b from-rose-deep/40 to-black/30 shadow-rose-glow animate-pulse-soft'
+            : 'border-gold-soft/80 text-parch-cream bg-gradient-to-b from-gold-soft/35 to-rose-deep/25 shadow-gold-glow animate-pulse-soft'
+          return (
+            <button
+              onClick={handleCommit}
+              disabled={!canCommit}
+              className={`w-full py-2.5 rounded-md font-display tracking-[0.3em] text-[12px] uppercase
+                          border transition-all active:scale-[0.98]
+                          ${
+                            canCommit
+                              ? activeClass
+                              : 'border-parch-cream/10 text-parch-cream/25 bg-black/20 cursor-not-allowed'
+                          }`}
+            >
+              {canCommit ? activeCopy : idleCopy}
+            </button>
+          )
+        })()}
       </div>
 
       {/* ── AI thinking chip ────────────────────────────────── */}
@@ -388,8 +424,20 @@ function getGuidance(args: {
   hasSeat: boolean
   aiThinking: boolean
   brainName: string
+  emptyCount: number
+  canChallenge: boolean
+  round: number
 }): Guidance {
-  const { phase, hasCard, hasSeat, aiThinking, brainName } = args
+  const {
+    phase,
+    hasCard,
+    hasSeat,
+    aiThinking,
+    brainName,
+    emptyCount,
+    canChallenge,
+    round,
+  } = args
   if (phase === 'reveal') return { text: '자정의 시선...', tone: 'italic' }
   if (phase === 'draw') return { text: '다음 라운드 준비...', tone: 'muted' }
   if (phase === 'unmasking')
@@ -397,9 +445,32 @@ function getGuidance(args: {
   if (phase === 'reckoning') return { text: '심판 준비 중...', tone: 'gold' }
   // commit phase
   if (aiThinking) return { text: `${brainName}이(가) 봉인 중...`, tone: 'active' }
-  if (!hasCard && !hasSeat) return { text: '카드를 골라주세요', tone: 'italic' }
-  if (hasCard && !hasSeat)
+  const courtFull = emptyCount === 0
+  if (courtFull && !canChallenge) {
+    const away = 5 - round
+    return {
+      text:
+        away > 0
+          ? `자리가 모두 찼습니다 · ${away}라운드 후 챌린지 개방`
+          : '자리가 모두 찼습니다 · 자정을 기다리세요',
+      tone: 'muted',
+    }
+  }
+  if (!hasCard && !hasSeat) {
+    if (courtFull && canChallenge)
+      return { text: '카드를 골라 상대 자리를 챌린지 하세요', tone: 'italic' }
+    return { text: '카드를 골라주세요', tone: 'italic' }
+  }
+  if (hasCard && !hasSeat) {
+    if (courtFull && canChallenge)
+      return { text: '챌린지할 상대 자리를 선택하세요', tone: 'italic' }
+    if (canChallenge)
+      return {
+        text: '자리를 선택하세요 · 상대 자리는 챌린지',
+        tone: 'italic',
+      }
     return { text: '자리를 봉인할 곳을 선택하세요', tone: 'italic' }
+  }
   if (hasCard && hasSeat)
     return { text: '봉인 준비 완료 · 하단 버튼을 누르세요', tone: 'gold' }
   return { text: '카드를 골라주세요', tone: 'italic' }
@@ -560,27 +631,39 @@ type SeatCardProps = {
   slot: SlotState
   selected: boolean
   canSelect: boolean
+  /** True when this occupied-by-opponent seat is a valid challenge target. */
+  challengeMode?: boolean
   onSelect: () => void
 }
 
-function SeatCard({ slot, selected, canSelect, onSelect }: SeatCardProps) {
+function SeatCard({
+  slot,
+  selected,
+  canSelect,
+  challengeMode = false,
+  onSelect,
+}: SeatCardProps) {
   const seatMeta = SEATS[slot.seat - 1]
   const isEmpty = !slot.placement && !slot.alliance && !slot.pending
-  const clickable = canSelect && isEmpty
+  const clickable = (canSelect && isEmpty) || challengeMode
 
   const borderClass = selected
-    ? 'border-gold-soft shadow-gold-glow'
-    : slot.pending
-      ? 'border-rose-deep/70'
-      : slot.alliance
-        ? 'border-lavender/70'
-        : slot.placement
-          ? slot.placement.owner === 'me'
-            ? 'border-gold-soft/50'
-            : 'border-silver/50'
-          : clickable
-            ? 'border-gold-soft/40 animate-invite'
-            : 'border-parch-cream/12'
+    ? challengeMode
+      ? 'border-rose-deep shadow-rose-glow'
+      : 'border-gold-soft shadow-gold-glow'
+    : challengeMode
+      ? 'border-rose-deep/60 animate-invite'
+      : slot.pending
+        ? 'border-rose-deep/70'
+        : slot.alliance
+          ? 'border-lavender/70'
+          : slot.placement
+            ? slot.placement.owner === 'me'
+              ? 'border-gold-soft/50'
+              : 'border-silver/50'
+            : clickable
+              ? 'border-gold-soft/40 animate-invite'
+              : 'border-parch-cream/12'
 
   return (
     <motion.button
@@ -663,6 +746,16 @@ function SeatCard({ slot, selected, canSelect, onSelect }: SeatCardProps) {
       {slot.pending && (
         <div className="relative mt-0.5 text-center font-serif italic text-[8px] text-rose-light">
           결투 유예 · MEZZANOTTE
+        </div>
+      )}
+      {challengeMode && !selected && (
+        <div className="relative mt-0.5 text-center font-mono text-[8px] tracking-[0.15em] text-rose-light uppercase">
+          ⚔ 챌린지
+        </div>
+      )}
+      {challengeMode && selected && (
+        <div className="relative mt-0.5 text-center font-mono text-[8px] tracking-[0.2em] text-rose-light uppercase animate-pulse">
+          ⚔ 챌린지 대상
         </div>
       )}
     </motion.button>

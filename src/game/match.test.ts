@@ -198,18 +198,17 @@ describe('R5 UNMASKING', () => {
   })
 })
 
-// ─── Challenge (R7+) ────────────────────────────────────────────────
-describe('challenge (R7+)', () => {
+// ─── Challenge (R5+) ────────────────────────────────────────────────
+describe('challenge (R5+)', () => {
   it('winning identity exiles defender', () => {
     // Setup: opponent already occupies S1 with a Thief; my Royalty challenges.
     const me = [card({ id: 500, identity: 'Royalty' })]
     const opp = [card({ id: 600, identity: 'Thief' })]
     let s = createMatch({ seed: 11, playerCards: me, opponentCards: opp })
-    // Fast-forward to R7 by mutating a fresh copy via commits/nextRound isn't
-    // necessary here — we manipulate a minimal state directly.
+    // Fast-forward to R5 — challenges open the moment identities are unmasked.
     s = {
       ...s,
-      round: 7,
+      round: 5,
       court: s.court.map((c, i) =>
         i === 0
           ? { ...c, placement: { card: opp[0], owner: 'opponent' } }
@@ -222,13 +221,13 @@ describe('challenge (R7+)', () => {
     expect(s2.players.opponent.exile.map((c) => c.id)).toContain(600)
   })
 
-  it('is a no-op below R7', () => {
+  it('is a no-op below R5', () => {
     const me = [card({ id: 501, identity: 'Royalty' })]
     const opp = [card({ id: 601, identity: 'Thief' })]
     let s = createMatch({ seed: 12, playerCards: me, opponentCards: opp })
     s = {
       ...s,
-      round: 6,
+      round: 4,
       court: s.court.map((c, i) =>
         i === 0 ? { ...c, placement: { card: opp[0], owner: 'opponent' } } : c,
       ),

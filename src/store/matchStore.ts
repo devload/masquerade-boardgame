@@ -191,11 +191,24 @@ export const useMatchStore = create<MatchStore>()(
     confirmCommit: () => {
       const { match, selectedCardId, selectedSeat } = get()
       if (!match || selectedCardId == null || selectedSeat == null) return
-      const next = commit(match, {
-        player: 'me',
-        cardId: selectedCardId,
-        seat: selectedSeat,
-      })
+      // Route to challenge() when the target seat is held by the opponent and
+      // R >= CHALLENGE_ALLOWED_FROM; otherwise standard commit.
+      const slot = match.court.find((c) => c.seat === selectedSeat)
+      const isChallenge =
+        !!slot?.placement &&
+        slot.placement.owner === 'opponent' &&
+        match.round >= 5
+      const next = isChallenge
+        ? challenge(match, {
+            player: 'me',
+            cardId: selectedCardId,
+            seat: selectedSeat,
+          })
+        : commit(match, {
+            player: 'me',
+            cardId: selectedCardId,
+            seat: selectedSeat,
+          })
       set((s) => {
         s.match = next
         s.selectedCardId = null
