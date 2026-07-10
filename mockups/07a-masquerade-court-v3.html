@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>07a v3 · MASQUERADE — The Court (R3/8)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Cinzel:wght@500;700&family=Space+Mono:wght@400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Watercolor pastel palette */
+    --cream:        #f5efe3;
+    --cream-soft:   #ede4d3;
+    --cream-warm:   #f8f0dd;
+    --parchment:    #ebdfc4;
+    --gold:         #e8d5b7;
+    --gold-deep:    #c48b6e;
+    --gold-shine:   #d9b98a;
+    --silver:       #c0c0c0;
+    --silver-soft:  #d6d6d6;
+    --rose:         #8b3a4a;
+    --rose-soft:    #b8697a;
+    --lavender:     #a68ba8;
+    --lavender-deep:#7a5d80;
+    --canal:        #7ba3c8;
+    --sage:         #88a065;
+    --cocoa:        #5b4636;
+    --cocoa-soft:   #7a5f4a;
+    --ink:          #3d2f24;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #1a120c;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    color: var(--cocoa);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(232, 213, 183, 0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 100% 80% at 50% 60%, #1e150f 0%, #0f0a06 100%);
+    display: flex;
+    justify-content: center;
+    padding: 24px 0;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Vignette darkening around device */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 90% 100% at 50% 50%, transparent 30%, rgba(0,0,0,0.6) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ================= PHONE FRAME ================= */
+  .phone {
+    width: 375px;
+    min-height: 812px;
+    background:
+      /* candlelight from top */
+      radial-gradient(ellipse 100% 35% at 50% 0%, rgba(232, 213, 183, 0.55) 0%, transparent 70%),
+      /* subtle marble noise */
+      radial-gradient(circle at 20% 25%, rgba(196, 139, 110, 0.06) 0%, transparent 40%),
+      radial-gradient(circle at 78% 55%, rgba(166, 139, 168, 0.05) 0%, transparent 45%),
+      radial-gradient(circle at 30% 85%, rgba(123, 163, 200, 0.04) 0%, transparent 50%),
+      linear-gradient(180deg, #f7f0e0 0%, #f2eada 45%, #ebe0c8 100%);
+    border-radius: 40px;
+    box-shadow:
+      0 30px 80px rgba(0,0,0,0.65),
+      inset 0 1px 0 rgba(255, 245, 220, 0.5),
+      inset 0 -2px 0 rgba(91, 70, 54, 0.08);
+    padding: 20px 14px 90px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  /* Vignette inside phone edges */
+  .phone::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 110% 100% at 50% 50%, transparent 55%, rgba(91, 70, 54, 0.18) 100%);
+    pointer-events: none;
+    z-index: 3;
+    border-radius: 40px;
+  }
+
+  /* Gold dust particles */
+  .dust {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+  }
+  .dust span {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--gold-deep);
+    border-radius: 50%;
+    opacity: 0.5;
+    box-shadow: 0 0 4px var(--gold-shine);
+    animation: rise linear infinite;
+  }
+  @keyframes rise {
+    0%   { transform: translateY(0) translateX(0); opacity: 0; }
+    15%  { opacity: 0.55; }
+    100% { transform: translateY(-140px) translateX(var(--dx, 8px)); opacity: 0; }
+  }
+
+  .content { position: relative; z-index: 5; }
+
+  /* ================= HEADER ================= */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .round-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .round-dots {
+    display: flex;
+    gap: 3px;
+  }
+  .round-dots i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(91, 70, 54, 0.18);
+    display: block;
+  }
+  .round-dots i.done { background: var(--gold-deep); }
+  .round-dots i.now  {
+    background: var(--rose);
+    box-shadow: 0 0 6px rgba(139, 58, 74, 0.5);
+    transform: scale(1.25);
+  }
+  .round-label {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--cocoa);
+    margin-left: 4px;
+  }
+  .scene-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    color: var(--cocoa-soft);
+    text-transform: uppercase;
+    padding: 3px 8px;
+    background: rgba(232, 213, 183, 0.55);
+    border: 1px solid rgba(196, 139, 110, 0.3);
+    border-radius: 3px;
+  }
+  .scoreboard {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: var(--cocoa);
+  }
+  .scoreboard .me { color: var(--gold-deep); font-weight: 700; }
+  .scoreboard .op { color: var(--cocoa-soft); font-weight: 500; }
+  .scoreboard .sep { color: rgba(91, 70, 54, 0.35); font-size: 9px; }
+
+  /* ================= ACTIVE EVENT BANNER ================= */
+  .event-banner {
+    margin: 8px -14px 12px;
+    padding: 8px 20px;
+    background:
+      linear-gradient(90deg,
+        rgba(232, 213, 183, 0.15) 0%,
+        rgba(232, 213, 183, 0.55) 15%,
+        rgba(232, 213, 183, 0.65) 50%,
+        rgba(232, 213, 183, 0.55) 85%,
+        rgba(232, 213, 183, 0.15) 100%);
+    border-top: 1px solid rgba(196, 139, 110, 0.4);
+    border-bottom: 1px solid rgba(196, 139, 110, 0.4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    animation: banner-pulse 4s ease-in-out infinite;
+  }
+  @keyframes banner-pulse {
+    0%, 100% {
+      box-shadow: inset 0 0 12px rgba(232, 213, 183, 0.3),
+                  0 0 8px rgba(196, 139, 110, 0.15);
+    }
+    50% {
+      box-shadow: inset 0 0 24px rgba(232, 213, 183, 0.6),
+                  0 0 18px rgba(196, 139, 110, 0.35);
+    }
+  }
+  .event-banner::before,
+  .event-banner::after {
+    content: '✦';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gold-deep);
+    font-size: 9px;
+    opacity: 0.7;
+  }
+  .event-banner::before { left: 8px; }
+  .event-banner::after  { right: 8px; }
+  .event-title {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .event-title .ita {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--cocoa);
+    letter-spacing: 0.02em;
+  }
+  .event-title .kor {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 10px;
+    color: var(--cocoa-soft);
+    letter-spacing: 0.06em;
+  }
+  .event-duration {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    color: var(--cocoa-soft);
+    letter-spacing: 0.12em;
+    text-align: right;
+    opacity: 0.8;
+  }
+
+  /* ================= ROUND TABLE ================= */
+  .table-wrap {
+    position: relative;
+    width: 100%;
+    height: 340px;
+    margin: 0 auto 6px;
+  }
+  .table-oval {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 240px;
+    border-radius: 50%;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 30%, rgba(255, 245, 220, 0.85) 0%, transparent 70%),
+      radial-gradient(ellipse 100% 80% at 50% 60%,
+        rgba(232, 213, 183, 0.7) 0%,
+        rgba(196, 139, 110, 0.3) 60%,
+        rgba(91, 70, 54, 0.15) 100%);
+    border: 1.5px solid rgba(196, 139, 110, 0.55);
+    box-shadow:
+      inset 0 4px 20px rgba(255, 245, 220, 0.6),
+      inset 0 -6px 20px rgba(91, 70, 54, 0.15),
+      0 8px 30px rgba(91, 70, 54, 0.2);
+  }
+  .table-oval::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    border: 0.5px dashed rgba(196, 139, 110, 0.35);
+  }
+  .table-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+  }
+  .table-center .ita {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 12px;
+    color: rgba(91, 70, 54, 0.6);
+    letter-spacing: 0.18em;
+  }
+  .table-center .kor {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 9px;
+    color: rgba(91, 70, 54, 0.42);
+    letter-spacing: 0.14em;
+    margin-top: 2px;
+  }
+  .table-center::before {
+    content: '— ✦ —';
+    display: block;
+    color: rgba(196, 139, 110, 0.4);
+    font-size: 8px;
+    letter-spacing: 0.3em;
+    margin-bottom: 3px;
+  }
+
+  /* ================= SEATS ================= */
+  .seat {
+    position: absolute;
+    width: 78px;
+    height: 92px;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    z-index: 2;
+  }
+  .seat-labels {
+    text-align: center;
+    line-height: 1.05;
+    margin-bottom: 2px;
+  }
+  .seat-ita {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 9px;
+    color: var(--cocoa);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .seat-kor {
+    font-family: 'Space Mono', monospace;
+    font-size: 6.5px;
+    color: var(--cocoa-soft);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  .seat-buff {
+    font-family: 'Space Mono', monospace;
+    font-size: 6.5px;
+    letter-spacing: 0.04em;
+    color: var(--gold-deep);
+    white-space: nowrap;
+  }
+  .seat-slot {
+    width: 44px;
+    height: 54px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  /* Empty seat */
+  .seat-slot.empty {
+    background: rgba(235, 223, 196, 0.35);
+    border: 1px dashed rgba(196, 139, 110, 0.5);
+  }
+  .seat-slot.empty span {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: rgba(196, 139, 110, 0.55);
+    font-weight: 500;
+  }
+
+  /* Placed card (mini) */
+  .mini-card {
+    width: 42px;
+    height: 52px;
+    border-radius: 4px;
+    background: var(--cream-warm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(91, 70, 54, 0.3);
+  }
+  .mini-card.mine {
+    border: 1.5px solid var(--gold-deep);
+    box-shadow:
+      0 0 0 1px rgba(232, 213, 183, 0.6),
+      0 2px 8px rgba(196, 139, 110, 0.4);
+  }
+  .mini-card.mine::before,
+  .mini-card.opp::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border: 0.5px solid currentColor;
+    border-radius: 2px;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .mini-card.mine::before { color: var(--gold-deep); }
+  .mini-card.opp {
+    border: 1.5px solid var(--silver);
+    box-shadow:
+      0 0 0 1px rgba(214, 214, 214, 0.5),
+      0 2px 8px rgba(120, 120, 120, 0.3);
+  }
+  .mini-card.opp::before { color: var(--silver); }
+  .mini-mask {
+    font-size: 15px;
+    line-height: 1;
+    filter: drop-shadow(0 1px 1px rgba(91, 70, 54, 0.3));
+  }
+  .mini-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 6px;
+    color: var(--cocoa);
+    text-align: center;
+    line-height: 1;
+    margin-top: 2px;
+    max-width: 38px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .mini-score {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 8px;
+    color: var(--gold-deep);
+    margin-top: 1px;
+    letter-spacing: 0.04em;
+  }
+  .mini-card.opp .mini-score { color: var(--cocoa-soft); }
+
+  /* Duel pending stack */
+  .duel-stack {
+    position: relative;
+    width: 44px;
+    height: 54px;
+  }
+  .duel-stack .facedown {
+    position: absolute;
+    width: 40px;
+    height: 50px;
+    border-radius: 4px;
+    background:
+      repeating-linear-gradient(45deg,
+        rgba(139, 58, 74, 0.45) 0,
+        rgba(139, 58, 74, 0.45) 2px,
+        rgba(184, 105, 122, 0.35) 2px,
+        rgba(184, 105, 122, 0.35) 4px);
+    border: 1px solid var(--rose);
+    box-shadow: 0 2px 6px rgba(139, 58, 74, 0.4);
+  }
+  .duel-stack .facedown::after {
+    content: '?';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    color: rgba(255, 245, 220, 0.85);
+    font-size: 16px;
+  }
+  .duel-stack .facedown.top {
+    transform: translate(3px, -3px) rotate(4deg);
+    border-color: var(--gold-deep);
+    background:
+      repeating-linear-gradient(45deg,
+        rgba(196, 139, 110, 0.5) 0,
+        rgba(196, 139, 110, 0.5) 2px,
+        rgba(232, 213, 183, 0.4) 2px,
+        rgba(232, 213, 183, 0.4) 4px);
+  }
+  .seat.duel .seat-slot {
+    background: rgba(139, 58, 74, 0.12);
+    border: 1.5px solid var(--rose);
+    animation: duel-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes duel-pulse {
+    0%, 100% {
+      box-shadow:
+        0 0 0 0 rgba(139, 58, 74, 0.5),
+        0 0 12px rgba(139, 58, 74, 0.3),
+        inset 0 0 8px rgba(139, 58, 74, 0.15);
+    }
+    50% {
+      box-shadow:
+        0 0 0 8px rgba(139, 58, 74, 0),
+        0 0 24px rgba(139, 58, 74, 0.55),
+        inset 0 0 14px rgba(139, 58, 74, 0.25);
+    }
+  }
+  .duel-sparks {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    font-size: 8px;
+    color: var(--rose);
+    animation: spark 1.6s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes spark {
+    0%, 100% { opacity: 0.5; transform: scale(0.9) rotate(-8deg); }
+    50%      { opacity: 1;   transform: scale(1.15) rotate(8deg); }
+  }
+
+  /* Seat highlighted as selected */
+  .seat.selected .seat-slot {
+    background: rgba(232, 213, 183, 0.5);
+    border: 1.5px solid var(--gold-deep);
+    animation: selected-pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes selected-pulse {
+    0%, 100% {
+      box-shadow:
+        0 0 0 0 rgba(196, 139, 110, 0.5),
+        0 0 10px rgba(232, 213, 183, 0.5);
+    }
+    50% {
+      box-shadow:
+        0 0 0 6px rgba(196, 139, 110, 0),
+        0 0 20px rgba(232, 213, 183, 0.85);
+    }
+  }
+  .seat.selected .seat-buff { color: var(--rose); }
+
+  /* Positional overrides: 8 seats around an oval */
+  /* Top of oval = "high seats" (7, 8), bottom of oval = "low seats" (1, 2)
+     We arrange 1-8 clockwise starting bottom-left */
+  .seat.s1 { top: 82%;  left: 24%; }
+  .seat.s2 { top: 90%;  left: 50%; }
+  .seat.s3 { top: 82%;  left: 76%; }
+  .seat.s4 { top: 50%;  left: 90%; }
+  .seat.s5 { top: 18%;  left: 76%; }
+  .seat.s6 { top: 10%;  left: 50%; }
+  .seat.s7 { top: 18%;  left: 24%; }
+  .seat.s8 { top: 50%;  left: 10%; }
+
+  /* Slight rotate for arc feel */
+  .seat.s1 .seat-slot { transform: rotate(-8deg); }
+  .seat.s3 .seat-slot { transform: rotate(8deg); }
+  .seat.s5 .seat-slot { transform: rotate(8deg); }
+  .seat.s7 .seat-slot { transform: rotate(-8deg); }
+
+  /* ================= STATE + DOTS ================= */
+  .state-line {
+    text-align: center;
+    margin: 4px 0 8px;
+  }
+  .state-line .ita {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--cocoa);
+    letter-spacing: 0.02em;
+  }
+  .state-line .sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    color: var(--cocoa-soft);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-top: 2px;
+    opacity: 0.85;
+  }
+
+  .slot-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 4px 0 10px;
+  }
+  .slot-dots .d {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--cream-warm);
+    border: 1px solid rgba(196, 139, 110, 0.4);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 6px;
+    color: rgba(91, 70, 54, 0.5);
+  }
+  .slot-dots .d.mine {
+    background: var(--gold-deep);
+    border-color: var(--gold-deep);
+    color: var(--cream-warm);
+  }
+  .slot-dots .d.opp {
+    background: var(--silver);
+    border-color: var(--silver);
+    color: var(--cocoa);
+  }
+  .slot-dots .d.duel {
+    background: var(--rose);
+    border-color: var(--rose);
+    color: var(--cream-warm);
+    animation: duel-pulse 1.6s ease-in-out infinite;
+  }
+  .slot-dots .d.selected {
+    background: var(--cream-warm);
+    border: 1.5px solid var(--gold-deep);
+    box-shadow: 0 0 0 2px rgba(196, 139, 110, 0.35), 0 0 10px rgba(232, 213, 183, 0.9);
+    animation: selected-pulse 1.8s ease-in-out infinite;
+    color: var(--gold-deep);
+    font-weight: 700;
+  }
+
+  /* ================= HAND SECTION ================= */
+  .section-title {
+    text-align: center;
+    margin: 8px 0 6px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--cocoa);
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .section-title::before,
+  .section-title::after {
+    content: '— ✦ —';
+    font-family: 'Space Mono', monospace;
+    color: rgba(196, 139, 110, 0.5);
+    letter-spacing: 0.3em;
+    font-size: 8px;
+    font-style: normal;
+  }
+
+  .hand {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    padding: 6px 0;
+    margin-bottom: 6px;
+  }
+  .card {
+    width: 92px;
+    height: 123px;
+    border-radius: 7px;
+    background: linear-gradient(180deg, var(--cream-warm) 0%, var(--parchment) 100%);
+    position: relative;
+    padding: 8px 6px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow:
+      0 4px 10px rgba(91, 70, 54, 0.28),
+      inset 0 1px 0 rgba(255, 245, 220, 0.7);
+    transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+    cursor: pointer;
+  }
+  /* Double bronze frame */
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1.5px solid var(--gold-deep);
+    border-radius: 5px;
+    pointer-events: none;
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 0.5px solid rgba(196, 139, 110, 0.55);
+    border-radius: 3px;
+    pointer-events: none;
+  }
+  /* Corner filigree marks */
+  .card .filigree {
+    position: absolute;
+    color: var(--gold-deep);
+    font-size: 8px;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  .card .filigree.tl { top: 8px;    left: 8px; }
+  .card .filigree.tr { top: 8px;    right: 8px; }
+  .card .filigree.bl { bottom: 8px; left: 8px; }
+  .card .filigree.br { bottom: 8px; right: 8px; }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 8px 18px rgba(91, 70, 54, 0.35),
+      inset 0 1px 0 rgba(255, 245, 220, 0.7);
+  }
+  .card.elevated {
+    transform: translateY(-8px);
+    box-shadow:
+      0 0 0 2px rgba(232, 213, 183, 0.9),
+      0 10px 22px rgba(196, 139, 110, 0.5),
+      0 0 20px rgba(232, 213, 183, 0.7),
+      inset 0 1px 0 rgba(255, 245, 220, 0.7);
+  }
+  .card.elevated::before {
+    border-color: var(--gold-deep);
+    box-shadow: 0 0 8px rgba(232, 213, 183, 0.6);
+  }
+
+  .card-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 10px;
+    color: var(--cocoa);
+    text-align: center;
+    line-height: 1.15;
+    margin-top: 8px;
+    padding: 0 4px;
+    z-index: 1;
+  }
+  .card-mask {
+    font-size: 34px;
+    line-height: 1;
+    filter: drop-shadow(0 2px 3px rgba(91, 70, 54, 0.3));
+    z-index: 1;
+  }
+  .card-foot {
+    z-index: 1;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .card-score {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--gold-deep);
+    line-height: 1;
+    letter-spacing: 0.04em;
+  }
+  .card-identity {
+    font-family: 'Space Mono', monospace;
+    font-size: 7px;
+    color: rgba(91, 70, 54, 0.5);
+    letter-spacing: 0.14em;
+    margin-top: 3px;
+  }
+
+  /* ================= COMMIT UI ================= */
+  .commit {
+    margin-top: 6px;
+    padding: 8px 10px;
+    background:
+      linear-gradient(180deg, rgba(255, 245, 220, 0.5) 0%, rgba(232, 213, 183, 0.35) 100%);
+    border: 1px solid rgba(196, 139, 110, 0.35);
+    border-radius: 6px;
+    position: relative;
+  }
+  .commit-selects {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .commit-cell {
+    flex: 1;
+    padding: 5px 8px;
+    background: rgba(255, 245, 220, 0.55);
+    border: 1px solid rgba(196, 139, 110, 0.3);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .commit-cell .lbl {
+    font-family: 'Space Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 0.16em;
+    color: var(--cocoa-soft);
+    text-transform: uppercase;
+  }
+  .commit-cell .val {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 11px;
+    color: var(--cocoa);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .commit-cell .val .check {
+    color: var(--sage);
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .commit-cta {
+    display: block;
+    width: 100%;
+    padding: 8px 0;
+    background:
+      linear-gradient(180deg, var(--gold) 0%, var(--gold-deep) 100%);
+    color: var(--cream-warm);
+    border: 1px solid var(--gold-deep);
+    border-radius: 5px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    text-align: center;
+    box-shadow:
+      0 3px 8px rgba(196, 139, 110, 0.4),
+      inset 0 1px 0 rgba(255, 245, 220, 0.5);
+    text-shadow: 0 1px 1px rgba(91, 70, 54, 0.3);
+    cursor: pointer;
+  }
+  .commit-cta span {
+    font-family: 'Space Mono', monospace;
+    font-style: normal;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    opacity: 0.85;
+    margin-left: 8px;
+  }
+  .commit-hint {
+    text-align: center;
+    margin-top: 5px;
+    font-family: 'Space Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 0.1em;
+    color: var(--cocoa-soft);
+    opacity: 0.85;
+  }
+
+  /* ================= WHISPER PANEL (right side, collapsed) ================= */
+  .whisper-panel {
+    position: absolute;
+    top: 90px;
+    right: 4px;
+    width: 42px;
+    padding: 6px 4px;
+    background:
+      linear-gradient(180deg, rgba(255, 245, 220, 0.7) 0%, rgba(232, 213, 183, 0.5) 100%);
+    border: 1px solid rgba(196, 139, 110, 0.4);
+    border-radius: 6px 0 0 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    z-index: 6;
+    box-shadow: -2px 3px 6px rgba(91, 70, 54, 0.15);
+  }
+  .whisper-panel .wpitem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 3px 0;
+    border-bottom: 0.5px solid rgba(196, 139, 110, 0.2);
+    width: 100%;
+  }
+  .whisper-panel .wpitem:last-child { border-bottom: none; }
+  .whisper-panel .icn {
+    font-size: 12px;
+    line-height: 1;
+    filter: drop-shadow(0 1px 1px rgba(91, 70, 54, 0.2));
+  }
+  .whisper-panel .num {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    color: var(--cocoa);
+    font-weight: 500;
+  }
+  .whisper-panel .wpitem.moon .num { color: var(--lavender-deep); }
+  .whisper-panel .wpitem.moon .num::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--lavender);
+    border-radius: 50%;
+    margin-left: 2px;
+    margin-top: -6px;
+    box-shadow: 0 0 4px var(--lavender);
+    animation: whisper-pulse 2s ease-in-out infinite;
+  }
+  @keyframes whisper-pulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.85); }
+    50%      { opacity: 1;   transform: scale(1.15); }
+  }
+  .whisper-panel .wpitem.duel .num { color: var(--rose); }
+  .whisper-panel .wpitem.event .num { color: var(--gold-deep); }
+  .whisper-panel .wpitem.exile .num { color: var(--cocoa); font-size: 7px; }
+  .whisper-panel .expand-hint {
+    font-family: 'Space Mono', monospace;
+    font-size: 6px;
+    color: rgba(91, 70, 54, 0.55);
+    letter-spacing: 0.1em;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    margin-top: 4px;
+    opacity: 0.7;
+  }
+
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- Gold dust -->
+  <div class="dust" id="dust"></div>
+
+  <!-- Whisper right-side panel -->
+  <aside class="whisper-panel" title="탭하여 로그 펼치기">
+    <div class="wpitem moon" title="속삭임 로그">
+      <div class="icn">🌙</div>
+      <div class="num" style="position:relative;">3</div>
+    </div>
+    <div class="wpitem duel" title="유예 결투">
+      <div class="icn">⚔</div>
+      <div class="num">1</div>
+    </div>
+    <div class="wpitem event" title="활성 이벤트">
+      <div class="icn">🎪</div>
+      <div class="num">•</div>
+    </div>
+    <div class="wpitem exile" title="추방 카드 수">
+      <div class="icn">☠</div>
+      <div class="num">0/0</div>
+    </div>
+    <div class="expand-hint">TAP</div>
+  </aside>
+
+  <div class="content">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="round-chip">
+        <div class="round-dots">
+          <i class="done"></i>
+          <i class="done"></i>
+          <i class="now"></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+        </div>
+        <div class="round-label">R3/8</div>
+      </div>
+      <div class="scene-tag">07a v3 · Court</div>
+      <div class="scoreboard">
+        <span class="me">나 8</span>
+        <span class="sep">·</span>
+        <span class="op">말콤 6</span>
+      </div>
+    </div>
+
+    <!-- ACTIVE EVENT BANNER -->
+    <div class="event-banner">
+      <div class="event-title">
+        <div class="ita">🎪 Il Festival delle Maschere</div>
+        <div class="kor">가면 축제 · 모든 카드 +1</div>
+      </div>
+      <div class="event-duration">
+        R3–R8<br>지속
+      </div>
+    </div>
+
+    <!-- ROUND TABLE -->
+    <div class="table-wrap">
+      <div class="table-oval"></div>
+      <div class="table-center">
+        <div class="ita">TAVOLO DEI OTTO</div>
+        <div class="kor">800년의 원탁</div>
+      </div>
+
+      <!-- Slot 1 · Trono · MY card (Red Butterfly) -->
+      <div class="seat s1">
+        <div class="seat-labels">
+          <div class="seat-ita">Trono</div>
+          <div class="seat-kor">왕좌</div>
+        </div>
+        <div class="seat-slot">
+          <div class="mini-card mine">
+            <div class="mini-mask">🦋</div>
+            <div class="mini-name">붉은 나비</div>
+            <div class="mini-score">+4</div>
+          </div>
+        </div>
+        <div class="seat-buff">👑 +5</div>
+      </div>
+
+      <!-- Slot 2 · Vicolo · OPPONENT (Count Malcolm) -->
+      <div class="seat s2">
+        <div class="seat-labels">
+          <div class="seat-ita">Vicolo</div>
+          <div class="seat-kor">뒷골목</div>
+        </div>
+        <div class="seat-slot">
+          <div class="mini-card opp">
+            <div class="mini-mask">🎭</div>
+            <div class="mini-name">말콤 백작</div>
+            <div class="mini-score">+3</div>
+          </div>
+        </div>
+        <div class="seat-buff">🗡 +3</div>
+      </div>
+
+      <!-- Slot 3 · Biblioteca · MY card (Carlo Assassin) -->
+      <div class="seat s3">
+        <div class="seat-labels">
+          <div class="seat-ita">Biblioteca</div>
+          <div class="seat-kor">도서관</div>
+        </div>
+        <div class="seat-slot">
+          <div class="mini-card mine">
+            <div class="mini-mask">🗡️</div>
+            <div class="mini-name">카를로</div>
+            <div class="mini-score">+3</div>
+          </div>
+        </div>
+        <div class="seat-buff">📚 +4</div>
+      </div>
+
+      <!-- Slot 4 · Foresta · OPPONENT (Silver Needle Lady) -->
+      <div class="seat s4">
+        <div class="seat-labels">
+          <div class="seat-ita">Foresta</div>
+          <div class="seat-kor">숲가</div>
+        </div>
+        <div class="seat-slot">
+          <div class="mini-card opp">
+            <div class="mini-mask">🏹</div>
+            <div class="mini-name">은침 부인</div>
+            <div class="mini-score">+2</div>
+          </div>
+        </div>
+        <div class="seat-buff">🏹 +4</div>
+      </div>
+
+      <!-- Slot 5 · Cuore del Ballo · DUEL PENDING -->
+      <div class="seat s5 duel">
+        <div class="seat-labels">
+          <div class="seat-ita">Cuore del Ballo</div>
+          <div class="seat-kor">무도회 중심</div>
+        </div>
+        <div class="seat-slot">
+          <div class="duel-stack">
+            <div class="facedown"></div>
+            <div class="facedown top"></div>
+          </div>
+          <div class="duel-sparks">✦</div>
+        </div>
+        <div class="seat-buff" style="color:var(--rose);">🏹 +2 ★2배</div>
+      </div>
+
+      <!-- Slot 6 · Sfera · EMPTY -->
+      <div class="seat s6">
+        <div class="seat-labels">
+          <div class="seat-ita">Sfera</div>
+          <div class="seat-kor">수정구</div>
+        </div>
+        <div class="seat-slot empty">
+          <span>6</span>
+        </div>
+        <div class="seat-buff">🔮 +4</div>
+      </div>
+
+      <!-- Slot 7 · Accademia · SELECTED (target for commit) -->
+      <div class="seat s7 selected">
+        <div class="seat-labels">
+          <div class="seat-ita">Accademia</div>
+          <div class="seat-kor">학문</div>
+        </div>
+        <div class="seat-slot empty">
+          <span>7</span>
+        </div>
+        <div class="seat-buff">📚 +3</div>
+      </div>
+
+      <!-- Slot 8 · Fianco del Re · EMPTY -->
+      <div class="seat s8">
+        <div class="seat-labels">
+          <div class="seat-ita">Fianco del Re</div>
+          <div class="seat-kor">왕 옆자리</div>
+        </div>
+        <div class="seat-slot empty">
+          <span>8</span>
+        </div>
+        <div class="seat-buff">🔮 +3 ★×3</div>
+      </div>
+    </div>
+
+    <!-- CURRENT STATE -->
+    <div class="state-line">
+      <div class="ita">가면 뒤 자리 다툼 · 정체 미공개</div>
+      <div class="sub">// 전반부 · 결투 유예</div>
+    </div>
+
+    <!-- SLOT SELECTION DOTS -->
+    <div class="slot-dots">
+      <div class="d mine">1</div>
+      <div class="d opp">2</div>
+      <div class="d mine">3</div>
+      <div class="d opp">4</div>
+      <div class="d duel">5</div>
+      <div class="d">6</div>
+      <div class="d selected">7</div>
+      <div class="d">8</div>
+    </div>
+
+    <!-- HAND -->
+    <div class="section-title">손패 · 3장 중 1장을 고르세요</div>
+    <div class="hand">
+      <div class="card">
+        <span class="filigree tl">✦</span>
+        <span class="filigree tr">✦</span>
+        <span class="filigree bl">✦</span>
+        <span class="filigree br">✦</span>
+        <div class="card-name">루비아나 백작부인<br><span style="opacity:0.65;">별 읽는 자</span></div>
+        <div class="card-mask">🎭</div>
+        <div class="card-foot">
+          <div class="card-score">+4</div>
+          <div class="card-identity">// 정체 ???</div>
+        </div>
+      </div>
+
+      <div class="card elevated">
+        <span class="filigree tl">✦</span>
+        <span class="filigree tr">✦</span>
+        <span class="filigree bl">✦</span>
+        <span class="filigree br">✦</span>
+        <div class="card-name">이반 남작<br><span style="opacity:0.65;">그림자의 신사</span></div>
+        <div class="card-mask">🎭</div>
+        <div class="card-foot">
+          <div class="card-score">+4</div>
+          <div class="card-identity">// 정체 ???</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="filigree tl">✦</span>
+        <span class="filigree tr">✦</span>
+        <span class="filigree bl">✦</span>
+        <span class="filigree br">✦</span>
+        <div class="card-name">미스터리 손님<br><span style="opacity:0.65;">이름 없는 자</span></div>
+        <div class="card-mask">🎭</div>
+        <div class="card-foot">
+          <div class="card-score">+3</div>
+          <div class="card-identity">// 정체 ???</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMIT UI -->
+    <div class="commit">
+      <div class="commit-selects">
+        <div class="commit-cell">
+          <div class="lbl">Carta · 카드</div>
+          <div class="val">이반 남작 <span class="check">✓</span></div>
+        </div>
+        <div class="commit-cell">
+          <div class="lbl">Posto · 자리</div>
+          <div class="val">Slot 7 · 학문 <span class="check">✓</span></div>
+        </div>
+      </div>
+      <button class="commit-cta">
+        봉인
+        <span>FACE-DOWN COMMIT</span>
+      </button>
+      <div class="commit-hint">
+        커밋 후 상대와 동시 리빌 · 마스크는 자정에 벗겨집니다
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Gold dust particles
+  (function () {
+    const dust = document.getElementById('dust');
+    if (!dust) return;
+    const N = 15;
+    for (let i = 0; i < N; i++) {
+      const s = document.createElement('span');
+      const left = Math.random() * 100;
+      const bottom = Math.random() * 30;
+      const dur = 8 + Math.random() * 10;
+      const delay = -Math.random() * dur;
+      const dx = (Math.random() - 0.5) * 30;
+      s.style.left = left + '%';
+      s.style.bottom = bottom + '%';
+      s.style.animationDuration = dur + 's';
+      s.style.animationDelay = delay + 's';
+      s.style.setProperty('--dx', dx + 'px');
+      dust.appendChild(s);
+    }
+  })();
+
+  // Hover shimmer on hand cards (soft translate on tap)
+  document.querySelectorAll('.card').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('elevated'));
+      el.classList.add('elevated');
+    });
+  });
+</script>
+</body>
+</html>

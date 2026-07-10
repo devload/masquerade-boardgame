@@ -1,0 +1,83 @@
+/* Masquerade typography — Cinzel + Cormorant Garamond + Space Mono + Inter */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&family=Noto+Color+Emoji&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html, body, #root {
+    height: 100vh;
+    height: -webkit-fill-available;
+    height: 100svh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  body {
+    font-family:
+      'Inter', system-ui, sans-serif,
+      'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
+    background:
+      radial-gradient(circle at 50% 0%, rgba(232,213,183,0.15) 0, transparent 60%),
+      radial-gradient(circle at 80% 90%, rgba(166,139,168,0.08) 0, transparent 55%),
+      #f5efe3;
+    color: #5b4636;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+
+  /* PC / wide viewport: constrain to a phone-shaped frame with ambient
+     candlelit backdrop. Mobile (<=520px) stays full-width. */
+  @media (min-width: 521px) {
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    #root {
+      width: min(420px, 100vw);
+      height: min(900px, 100vh);
+      max-height: 100vh;
+      border: 1px solid rgba(139,111,71,0.3);
+      border-radius: 28px;
+      box-shadow:
+        0 0 0 1px rgba(196,139,110,0.12),
+        0 40px 80px -20px rgba(91,70,54,0.35),
+        0 0 60px rgba(196,139,110,0.06);
+      overflow: hidden;
+      position: relative;
+      background: #f5efe3;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 40% at 15% 20%, rgba(232,213,183,0.1), transparent 60%),
+        radial-gradient(ellipse 60% 40% at 85% 80%, rgba(166,139,168,0.08), transparent 60%);
+      z-index: 0;
+    }
+  }
+}
+
+@layer utilities {
+  .pt-safe { padding-top: env(safe-area-inset-top); }
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+  .emoji {
+    font-family:
+      'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+      'Twemoji Mozilla', 'Noto Color Emoji', 'EmojiOne Color',
+      'Android Emoji', sans-serif;
+    font-variant-emoji: emoji;
+  }
+}
