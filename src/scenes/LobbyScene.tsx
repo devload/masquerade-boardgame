@@ -1,21 +1,61 @@
 /**
  * LobbyScene — the title / entry screen.
  *
- * Ported verbatim from the original title-screen `App.tsx`. Visuals unchanged;
- * only the Entra al Ballo button is now wired to startMatch() → the store
- * then routes to CourtScene.
+ * Extended from the original scaffold: still the same MASQUERADE mask,
+ * MDCCLXXX ornament, rose divider, and Italian subtitle. Now adds:
+ *   1. A first-time TutorialOverlay (conditionally rendered).
+ *   2. A rival-director picker (말콤 · 이자벨라 · L'Ombra) below the CTA.
+ *   3. A "?" help button top-right → opens the persistent RulesModal.
+ *   4. A "다음엔 이렇게" toast after the first completed match.
+ *
+ * Visual language is preserved verbatim; the picker + toast + help button
+ * sit around the existing title block without replacing it.
  */
 
+import { AnimatePresence, motion } from 'framer-motion'
+import { useEffect, useMemo, useState } from 'react'
+
+import { createAIBrain } from '../game/ai.ts'
+import type { Difficulty } from '../game/ai.ts'
 import { useMatchStore } from '../store/matchStore.ts'
+import {
+  IsabellaSigil,
+  MalcolmSigil,
+  OmbraSigil,
+} from '../ui/DirectorSigils.tsx'
 import { NightAmbience } from '../ui/NightAmbience.tsx'
+import { TutorialOverlay } from './TutorialOverlay.tsx'
+
+const DIFFICULTY_TIER: Record<Difficulty, string> = {
+  malcolm: '초급',
+  isabella: '중급',
+  lombra: '고급',
+}
+
+const DIFFICULTY_TIER_IT: Record<Difficulty, string> = {
+  malcolm: 'Novizio',
+  isabella: 'Adepto',
+  lombra: 'Maestro',
+}
+
+const DIFFICULTIES: Difficulty[] = ['malcolm', 'isabella', 'lombra']
 
 export function LobbyScene() {
+  const tutorialSeen = useMatchStore((s) => s.tutorialSeen)
+  const [selected, setSelected] = useState<Difficulty>('malcolm')
+
   return (
     <div className="w-full h-full relative flex flex-col overflow-hidden">
       <NightAmbience intensity="full" />
 
+      {/* Top-right help button */}
+      <HelpButton />
+
+      {/* First-match hint toast */}
+      <FirstMatchToast />
+
       {/* Content column */}
-      <div className="relative flex-1 flex flex-col items-center justify-center gap-4 px-8 pt-safe">
+      <div className="relative flex-1 flex flex-col items-center justify-start gap-4 px-6 pt-safe pt-8 pb-2 overflow-y-auto">
         <YearOrnament />
 
         <div className="animate-mask-drift">
@@ -31,19 +71,85 @@ export function LobbyScene() {
           자정에 밝혀지는 정체.
         </div>
 
-        <EnterButton />
+        <RivalPicker selected={selected} onSelect={setSelected} />
 
-        <div className="mt-2 font-mono text-[9px] tracking-[0.35em] text-parch-cream/30 uppercase">
+        <EnterButton difficulty={selected} />
+
+        <div className="mt-1 font-mono text-[9px] tracking-[0.35em] text-parch-cream/30 uppercase">
           Ombra Kingdom · Solo Rival
         </div>
       </div>
 
       <VersionChip />
+
+      {/* First-time tutorial overlay */}
+      <AnimatePresence>
+        {!tutorialSeen && <TutorialOverlay key="tutorial" />}
+      </AnimatePresence>
     </div>
   )
 }
 
-/* ────────────────────────────────────────────────────────────── Title ── */
+/* ────────────────────────────────────────────────────────── Help ── */
+
+function HelpButton() {
+  const setShowRules = useMatchStore((s) => s.setShowRules)
+  return (
+    <button
+      onClick={() => setShowRules(true)}
+      aria-label="규칙 도움말"
+      className="absolute z-[30] top-3 right-3 pt-safe w-11 h-11 rounded-full
+                 border border-gold-soft/40 bg-lavender-deep/40 backdrop-blur-sm
+                 flex items-center justify-center
+                 text-gold-soft/85 hover:text-parch-cream
+                 hover:border-gold-soft transition active:scale-95"
+    >
+      <span className="font-display italic text-[17px] leading-none">?</span>
+    </button>
+  )
+}
+
+/* ─────────────────────────────────────────────── First match nudge ── */
+
+function FirstMatchToast() {
+  const justFinishedFirstMatch = useMatchStore((s) => s.justFinishedFirstMatch)
+  const dismiss = useMatchStore((s) => s.dismissFirstMatchHint)
+
+  useEffect(() => {
+    if (!justFinishedFirstMatch) return
+    const t = setTimeout(dismiss, 5000)
+    return () => clearTimeout(t)
+  }, [justFinishedFirstMatch, dismiss])
+
+  return (
+    <AnimatePresence>
+      {justFinishedFirstMatch && (
+        <motion.button
+          key="hint-toast"
+          onClick={dismiss}
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.3 }}
+          className="absolute z-[35] top-3 left-1/2 -translate-x-1/2 pt-safe
+                     max-w-[280px] px-4 py-2.5 rounded-full
+                     border border-gold-soft/40 bg-lavender-deep/85 backdrop-blur-sm
+                     text-parch-cream/90 shadow-[0_6px_18px_rgba(0,0,0,0.35)]"
+        >
+          <div className="font-mono text-[9px] tracking-[0.3em] text-gold-soft/80 uppercase">
+            Susurro
+          </div>
+          <div className="mt-0.5 font-serif italic text-[12px] leading-snug text-left">
+            다음엔 이자벨라 부인에게 도전해보세요.<br />
+            그녀는 계산이 냉정합니다.
+          </div>
+        </motion.button>
+      )}
+    </AnimatePresence>
+  )
+}
+
+/* ────────────────────────────────────────────────────── Title ── */
 
 function YearOrnament() {
   return (
@@ -85,13 +191,128 @@ function RoseDivider() {
   )
 }
 
-function EnterButton() {
+/* ───────────────────────────────────────────────── Rival picker ── */
+
+function RivalPicker({
+  selected,
+  onSelect,
+}: {
+  selected: Difficulty
+  onSelect: (d: Difficulty) => void
+}) {
+  // Instantiate all three brains once so we can read .name/.flavor.
+  const brains = useMemo(
+    () =>
+      DIFFICULTIES.reduce(
+        (acc, d) => {
+          acc[d] = createAIBrain(d)
+          return acc
+        },
+        {} as Record<Difficulty, ReturnType<typeof createAIBrain>>,
+      ),
+    [],
+  )
+
+  return (
+    <div className="mt-2 w-full max-w-[340px]">
+      <div className="text-center mb-3">
+        <div className="font-mono text-[9px] tracking-[0.4em] text-gold-soft/70 uppercase">
+          RIVAL REGISTA
+        </div>
+        <div className="mt-1 font-serif italic text-[11px] text-parch-cream/55">
+          누구와 자리를 다투시겠습니까
+        </div>
+      </div>
+      <div className="flex justify-center gap-2.5">
+        {DIFFICULTIES.map((d) => {
+          const b = brains[d]
+          return (
+            <RivalCard
+              key={d}
+              difficulty={d}
+              name={b.name}
+              flavor={b.flavor}
+              isSelected={d === selected}
+              onSelect={() => onSelect(d)}
+            />
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function RivalCard({
+  difficulty,
+  name,
+  flavor,
+  isSelected,
+  onSelect,
+}: {
+  difficulty: Difficulty
+  name: string
+  flavor: string
+  isSelected: boolean
+  onSelect: () => void
+}) {
+  return (
+    <button
+      onClick={onSelect}
+      aria-pressed={isSelected}
+      className="flex-1 min-w-0 group active:scale-[0.97] transition-transform"
+    >
+      <div
+        className={`relative w-full h-full rounded-xl border p-2.5 pt-3 flex flex-col items-center gap-1.5 transition
+          ${
+            isSelected
+              ? 'border-gold-soft/80 shadow-[0_0_18px_rgba(232,213,183,0.35)] scale-[1.03]'
+              : 'border-gold-soft/20 hover:border-gold-soft/50'
+          }`}
+        style={{
+          background: isSelected
+            ? 'linear-gradient(180deg, rgba(80,55,88,0.75) 0%, rgba(30,18,40,0.85) 100%)'
+            : 'linear-gradient(180deg, rgba(50,32,58,0.55) 0%, rgba(24,14,32,0.7) 100%)',
+        }}
+      >
+        <div className="w-[68px] h-[68px] flex items-center justify-center">
+          <RivalSigil difficulty={difficulty} />
+        </div>
+        <div className="text-center">
+          <div className="font-display tracking-[0.14em] text-[11px] text-parch-cream leading-tight">
+            {name}
+          </div>
+          <div className="mt-0.5 font-mono text-[8px] tracking-[0.25em] text-gold-soft/80 uppercase">
+            {DIFFICULTY_TIER[difficulty]} · {DIFFICULTY_TIER_IT[difficulty]}
+          </div>
+        </div>
+        <div className="mt-0.5 font-serif italic text-[10px] leading-snug text-parch-cream/70 text-center min-h-[24px] px-0.5">
+          {flavor}
+        </div>
+      </div>
+    </button>
+  )
+}
+
+function RivalSigil({ difficulty }: { difficulty: Difficulty }) {
+  switch (difficulty) {
+    case 'malcolm':
+      return <MalcolmSigil size={68} />
+    case 'isabella':
+      return <IsabellaSigil size={68} />
+    case 'lombra':
+      return <OmbraSigil size={68} />
+  }
+}
+
+/* ──────────────────────────────────────────────────── Enter CTA ── */
+
+function EnterButton({ difficulty }: { difficulty: Difficulty }) {
   const startMatch = useMatchStore((s) => s.startMatch)
   return (
     <button
-      className="mt-6 relative group active:scale-95 transition-transform"
+      className="mt-3 relative group active:scale-95 transition-transform"
       onClick={() => {
-        startMatch()
+        startMatch(undefined, difficulty)
       }}
     >
       <div className="absolute -inset-2 bg-gold-soft/15 rounded-full blur-lg group-hover:bg-gold-soft/30 transition" />
@@ -109,7 +330,7 @@ function EnterButton() {
 
 function VersionChip() {
   return (
-    <div className="relative pb-4 flex justify-center pb-safe">
+    <div className="relative pb-2 flex justify-center pb-safe">
       <div
         className="inline-flex items-center gap-2 px-3 py-1 rounded-full
                    bg-lavender-deep/40 border border-gold-soft/15 backdrop-blur-sm"
@@ -127,7 +348,7 @@ function VersionChip() {
 
 function MasqueradeMask() {
   return (
-    <svg viewBox="0 0 260 200" width="240" className="drop-shadow-[0_10px_36px_rgba(139,58,74,0.55)]">
+    <svg viewBox="0 0 260 200" width="220" className="drop-shadow-[0_10px_36px_rgba(139,58,74,0.55)]">
       <defs>
         <linearGradient id="silverGrad" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stopColor="#f4eedc" />

@@ -11,6 +11,7 @@ import type { ComponentType } from 'react'
 import { CourtScene } from './scenes/CourtScene.tsx'
 import { LobbyScene } from './scenes/LobbyScene.tsx'
 import { ReckoningScene } from './scenes/ReckoningScene.tsx'
+import { RulesModal } from './scenes/RulesModal.tsx'
 import { UnmaskingScene } from './scenes/UnmaskingScene.tsx'
 import { useMatchStore } from './store/matchStore.ts'
 import type { SceneId } from './store/matchStore.ts'
@@ -26,5 +27,10 @@ const SCENE_MAP: Record<SceneId, ComponentType> = {
 export default function App() {
   const scene = useMatchStore((s) => s.scene)
   const Scene = SCENE_MAP[scene]
-  return <Scene />
+  return (
+    <>
+      <Scene />
+      <RulesModal />
+    </>
+  )
 }
