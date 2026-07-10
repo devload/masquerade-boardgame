@@ -78,6 +78,15 @@ export function LobbyScene() {
         <div className="mt-1 font-mono text-[9px] tracking-[0.35em] text-parch-cream/30 uppercase">
           Ombra Kingdom · Solo Rival
         </div>
+
+        <a
+          href="/guide.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-2 font-mono text-[9px] tracking-[0.35em] text-gold-soft/60 hover:text-gold-soft uppercase transition-colors underline decoration-gold-soft/30 underline-offset-4"
+        >
+          Guida di Gioco · 가이드 ▸
+        </a>
       </div>
 
       <VersionChip />

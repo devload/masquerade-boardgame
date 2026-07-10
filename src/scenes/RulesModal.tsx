@@ -70,13 +70,28 @@ export function RulesModal() {
           >
             <Header onClose={() => setShowRules(false)} />
             <TabBar active={section} onSelect={setSection} />
-            <div className="flex-1 overflow-y-auto px-6 pb-10 pt-2 text-parch-cream/90">
+            <div className="flex-1 overflow-y-auto px-6 pb-6 pt-2 text-parch-cream/90">
               {section === 'flow' && <FlowSection />}
               {section === 'rps5' && <Rps5Section />}
               {section === 'seats' && <SeatsSection />}
               {section === 'events' && <EventsSection />}
               {section === 'combat' && <CombatSection />}
               {section === 'scoring' && <ScoringSection />}
+              <div className="mt-8 pt-6 border-t border-gold-soft/15 flex flex-col items-center gap-2">
+                <div className="font-serif italic text-[12px] text-parch-cream/50">
+                  더 자세한 전략과 다이어그램은 전체 가이드에서
+                </div>
+                <a
+                  href="/guide.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 px-4 py-1.5 rounded-full border border-gold-soft/50
+                             font-mono text-[10px] tracking-[0.3em] text-gold-soft/85 uppercase
+                             hover:border-gold-soft hover:text-parch-cream transition"
+                >
+                  Guida di Gioco · 전체 가이드 열기 ▸
+                </a>
+              </div>
             </div>
           </motion.div>
         </motion.div>

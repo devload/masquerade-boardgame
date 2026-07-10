@@ -1,0 +1,1006 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MASQUERADE 플레이 가이드 · Il Ballo dei Volti Argentati</title>
+<meta name="theme-color" content="#1e1424">
+<meta name="description" content="MASQUERADE (Il Ballo dei Volti Argentati) 규칙 요약 · 전략 가이드 · RPS-5 상성 · 슬롯 버프 · 챌린지 · 몰락">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+<style>
+:root {
+  --parch: #f5efe3;
+  --parch-warm: #ecdfc9;
+  --gold-soft: #e8d5b7;
+  --gold: #c48b6e;
+  --gold-bright: #f0c8a8;
+  --rose-deep: #8b3a4a;
+  --rose-light: #c48b95;
+  --lavender: #a68ba8;
+  --lavender-deep: #3d1f4a;
+  --canal: #7ba3c8;
+  --sage: #88a065;
+  --cocoa: #5b4636;
+  --cocoa-light: #8b6f47;
+  --bg-1: #241628;
+  --bg-2: #1a1220;
+  --bg-3: #2a1420;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
+  background:
+    radial-gradient(ellipse 100% 55% at 50% 105%, rgba(139,58,74,0.35) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 20% 22%, rgba(232,213,183,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 82% 15%, rgba(196,139,110,0.10) 0%, transparent 55%),
+    linear-gradient(178deg, #241628 0%, #1a1220 45%, #2a1420 100%);
+  background-attachment: fixed;
+  color: var(--parch);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overscroll-behavior: none;
+}
+
+.wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ─── Header ─── */
+header.masthead {
+  padding: 56px 24px 24px;
+  text-align: center;
+  border-bottom: 1px solid rgba(232,213,183,0.15);
+  margin-bottom: 40px;
+  position: relative;
+}
+header.masthead .eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  color: rgba(232,213,183,0.55);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+header.masthead h1 {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: clamp(28px, 6vw, 48px);
+  letter-spacing: 0.22em;
+  margin: 0 0 12px;
+  color: var(--parch);
+  text-shadow: 0 0 30px rgba(232,213,183,0.4), 0 2px 12px rgba(139,58,74,0.4);
+}
+header.masthead .sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 15px;
+  color: rgba(232,213,183,0.7);
+}
+header.masthead .flourish {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-top: 18px;
+}
+header.masthead .flourish .line {
+  width: 40px; height: 1px; background: rgba(139,58,74,0.6);
+}
+header.masthead .flourish .diamond {
+  font-family: 'Cinzel', serif; color: var(--rose-light); font-size: 13px;
+}
+header.masthead .play-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 24px;
+  padding: 10px 22px;
+  border: 1px solid rgba(232,213,183,0.5);
+  border-radius: 999px;
+  background: linear-gradient(to bottom, rgba(232,213,183,0.05), rgba(139,58,74,0.1));
+  color: var(--gold-soft);
+  text-decoration: none;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+header.masthead .play-cta:hover {
+  border-color: var(--gold-soft);
+  color: var(--parch);
+  box-shadow: 0 0 20px rgba(232,213,183,0.2);
+}
+
+/* ─── TOC (sticky sidebar on desktop, top block on mobile) ─── */
+.toc {
+  background: rgba(20,12,30,0.55);
+  border: 1px solid rgba(232,213,183,0.15);
+  border-radius: 10px;
+  padding: 20px 22px;
+  margin: 0 auto 36px;
+  backdrop-filter: blur(6px);
+}
+.toc .toc-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  color: var(--gold-soft);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.toc ol {
+  columns: 2;
+  column-gap: 24px;
+  padding-left: 20px;
+  margin: 0;
+  color: var(--parch);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+}
+.toc ol li { margin: 4px 0; break-inside: avoid; }
+.toc a {
+  color: rgba(232,213,183,0.85);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.toc a:hover { color: var(--parch); text-decoration: underline; text-decoration-color: var(--rose-light); }
+
+/* ─── Sections ─── */
+section {
+  margin: 56px 0;
+  scroll-margin-top: 24px;
+}
+section > h2 {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: clamp(20px, 4vw, 26px);
+  letter-spacing: 0.15em;
+  color: var(--parch);
+  margin-bottom: 6px;
+  border-bottom: 1px solid rgba(232,213,183,0.2);
+  padding-bottom: 8px;
+}
+section > h2 .num {
+  display: inline-block;
+  color: var(--rose-light);
+  font-family: 'Cinzel', serif;
+  margin-right: 8px;
+  font-size: 0.85em;
+}
+section > h2 .it {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: rgba(232,213,183,0.55);
+  margin-top: 4px;
+  letter-spacing: normal;
+}
+h3 {
+  font-family: 'Cinzel', serif;
+  font-weight: 500;
+  font-size: 17px;
+  letter-spacing: 0.1em;
+  color: var(--gold-soft);
+  margin: 30px 0 10px;
+}
+h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--rose-light);
+  margin: 20px 0 8px;
+  font-weight: 600;
+}
+p, li { color: rgba(245,239,227,0.9); font-size: 15px; }
+p { margin: 10px 0; }
+ul, ol { padding-left: 24px; margin: 10px 0; }
+li { margin: 5px 0; }
+strong { color: var(--parch); font-weight: 600; }
+em { color: var(--rose-light); font-style: italic; }
+code, .mono {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  background: rgba(20,12,30,0.6);
+  border: 1px solid rgba(232,213,183,0.15);
+  color: var(--gold-soft);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+pre {
+  background: rgba(10,5,15,0.7);
+  border: 1px solid rgba(232,213,183,0.15);
+  border-radius: 6px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--gold-soft);
+}
+pre code { background: none; border: none; padding: 0; }
+
+blockquote {
+  border-left: 3px solid var(--rose-deep);
+  padding: 8px 16px;
+  margin: 20px 0;
+  color: rgba(245,239,227,0.75);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 16px;
+  background: rgba(139,58,74,0.08);
+  border-radius: 0 6px 6px 0;
+}
+
+/* ─── Tables ─── */
+.table-wrap { overflow-x: auto; margin: 16px 0; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid rgba(232,213,183,0.2);
+  background: rgba(20,12,30,0.4);
+  font-size: 14px;
+}
+table th {
+  background: rgba(139,58,74,0.15);
+  color: var(--gold-soft);
+  font-family: 'Cinzel', serif;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(232,213,183,0.25);
+}
+table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(232,213,183,0.08);
+  vertical-align: top;
+}
+table tr:last-child td { border-bottom: none; }
+table td.mono, table td .num { font-family: 'Space Mono', monospace; color: var(--gold-soft); }
+
+/* ─── Diagram containers ─── */
+.diagram {
+  display: flex; flex-direction: column; align-items: center;
+  margin: 24px 0;
+  padding: 20px;
+  background: rgba(20,12,30,0.4);
+  border: 1px solid rgba(232,213,183,0.15);
+  border-radius: 10px;
+}
+.diagram svg { max-width: 100%; height: auto; }
+.diagram .caption {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(232,213,183,0.6);
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* ─── Info boxes ─── */
+.tip, .warn, .lore {
+  padding: 12px 18px;
+  border-radius: 6px;
+  margin: 16px 0;
+  border-left: 3px solid;
+  font-size: 14px;
+}
+.tip { border-color: var(--gold-soft); background: rgba(232,213,183,0.05); }
+.tip::before { content: '💡 팁 · '; color: var(--gold-soft); font-family: 'Cinzel',serif; letter-spacing: 0.15em; font-size: 11px; text-transform: uppercase; }
+.warn { border-color: var(--rose-deep); background: rgba(139,58,74,0.08); }
+.warn::before { content: '⚠ 주의 · '; color: var(--rose-light); font-family: 'Cinzel',serif; letter-spacing: 0.15em; font-size: 11px; text-transform: uppercase; }
+.lore { border-color: var(--lavender); background: rgba(166,139,168,0.06); }
+.lore::before { content: '✦ 배경 · '; color: var(--lavender); font-family: 'Cinzel',serif; letter-spacing: 0.15em; font-size: 11px; text-transform: uppercase; }
+
+/* ─── Identity chips ─── */
+.chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  border: 1px solid;
+  margin: 0 2px;
+}
+.chip.royalty { background: rgba(232,213,183,0.15); border-color: rgba(232,213,183,0.5); color: var(--gold-soft); }
+.chip.thief   { background: rgba(139,58,74,0.15); border-color: rgba(196,139,149,0.5); color: var(--rose-light); }
+.chip.scholar { background: rgba(123,163,200,0.12); border-color: rgba(123,163,200,0.5); color: var(--canal); }
+.chip.hunter  { background: rgba(136,160,101,0.12); border-color: rgba(136,160,101,0.5); color: var(--sage); }
+.chip.mystic  { background: rgba(166,139,168,0.15); border-color: rgba(166,139,168,0.5); color: var(--lavender); }
+
+/* ─── Director cards (Section 11) ─── */
+.rivals {
+  display: grid; grid-template-columns: 1fr; gap: 18px;
+  margin: 24px 0;
+}
+@media (min-width: 640px) { .rivals { grid-template-columns: 1fr 1fr 1fr; } }
+.rival {
+  padding: 20px 18px;
+  border: 1px solid rgba(232,213,183,0.2);
+  border-radius: 10px;
+  background: linear-gradient(to bottom, rgba(20,12,30,0.6), rgba(0,0,0,0.4));
+}
+.rival h4 { margin-top: 0; font-size: 15px; }
+.rival .diff {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+.rival.novizio { border-color: rgba(232,213,183,0.35); }
+.rival.novizio .diff { color: var(--gold-soft); }
+.rival.adepto { border-color: rgba(166,139,168,0.4); }
+.rival.adepto .diff { color: var(--lavender); }
+.rival.maestro { border-color: rgba(139,58,74,0.5); }
+.rival.maestro .diff { color: var(--rose-light); }
+.rival blockquote { margin: 12px 0; font-size: 14px; }
+
+/* ─── Rule card (Section 14) ─── */
+.rule-card {
+  padding: 26px 32px;
+  border: 2px solid var(--gold-soft);
+  border-radius: 12px;
+  background: linear-gradient(to bottom, rgba(232,213,183,0.06), rgba(139,58,74,0.08));
+  margin: 32px auto;
+  box-shadow: 0 0 30px rgba(232,213,183,0.15);
+  max-width: 520px;
+}
+.rule-card ul { list-style: none; padding: 0; margin: 0; }
+.rule-card li {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  color: var(--parch);
+  padding: 5px 0;
+  border-bottom: 1px dashed rgba(232,213,183,0.15);
+}
+.rule-card li:last-child { border-bottom: none; }
+.rule-card li::before { content: '✦ '; color: var(--gold-soft); margin-right: 4px; }
+
+/* ─── Footer ─── */
+footer.gfooter {
+  margin-top: 80px;
+  padding: 32px 20px;
+  border-top: 1px solid rgba(232,213,183,0.15);
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  color: rgba(232,213,183,0.5);
+  font-size: 14px;
+}
+footer.gfooter a { color: var(--gold-soft); text-decoration: none; }
+footer.gfooter a:hover { text-decoration: underline; }
+
+/* ─── Utilities ─── */
+.center { text-align: center; }
+.mt-lg { margin-top: 32px; }
+.mono-small {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: rgba(232,213,183,0.5);
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .toc ol { columns: 1; }
+  header.masthead { padding: 40px 20px 20px; }
+  section { margin: 40px 0; }
+}
+
+/* Print */
+@media print {
+  body { background: #fff; color: #222; }
+  header.masthead, section > h2, h3, h4 { color: #222; }
+  .toc, .play-cta, footer.gfooter a { display: none; }
+  pre, table { border-color: #ccc; background: #f9f6f0; color: #222; }
+  .diagram { background: none; border: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════════ HEADER ═══ -->
+<header class="masthead">
+  <div class="eyebrow">MDCCLXXX · Ombra Kingdom</div>
+  <h1>MASQUERADE</h1>
+  <div class="sub">Il Ballo dei Volti Argentati · 은가면 무도회</div>
+  <div class="flourish">
+    <span class="line"></span>
+    <span class="diamond">✦</span>
+    <span class="line"></span>
+  </div>
+  <div class="sub" style="margin-top:14px;">플레이 가이드 · Guida di Gioco</div>
+  <a class="play-cta" href="https://masquerade-boardgame.vercel.app">Entra al Ballo ▸</a>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════ TOC ═══ -->
+<nav class="toc" aria-label="목차">
+  <div class="toc-title">Indice · 목차</div>
+  <ol>
+    <li><a href="#s1">게임 개요</a></li>
+    <li><a href="#s2">화면 흐름</a></li>
+    <li><a href="#s3">라운드 진행</a></li>
+    <li><a href="#s4">RPS-5 정체 상성</a></li>
+    <li><a href="#s5">자리 · Slot Buff</a></li>
+    <li><a href="#s6">8라운드 흐름과 자정</a></li>
+    <li><a href="#s7">왕궁 이벤트</a></li>
+    <li><a href="#s8">챌린지 · Sfida</a></li>
+    <li><a href="#s9">몰락 · Rovina</a></li>
+    <li><a href="#s10">점수 계산</a></li>
+    <li><a href="#s11">감독별 전략</a></li>
+    <li><a href="#s12">실전 팁</a></li>
+    <li><a href="#s13">자주 하는 실수</a></li>
+    <li><a href="#s14">규칙 요약 카드</a></li>
+    <li><a href="#s15">더 알아보기</a></li>
+  </ol>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════ § 1 ═══ -->
+<section id="s1">
+<h2><span class="num">§ I</span> 게임 개요 <span class="it">Panoramica</span></h2>
+<p><strong>MASQUERADE</strong>는 1인용 세로 모바일 웹 게임입니다. 당신은 <strong>Il Regista</strong> — 무도회의 감독. 왕궁 원탁의 8개 자리에 가면 쓴 손님들을 앉히고, 자정(<em>Mezzanotte</em>)에 정체가 밝혀지는 심리·전략 게임입니다.</p>
+
+<div class="table-wrap"><table>
+<tr><th>항목</th><th>내용</th></tr>
+<tr><td>세션 길이</td><td>5~10분</td></tr>
+<tr><td>라운드</td><td>8라운드 + 자정(R5) + 채점(R8 이후)</td></tr>
+<tr><td>손패</td><td>5장 유지 (매 라운드 봉인 후 자동 보충)</td></tr>
+<tr><td>덱</td><td>40장 (정체 5종 × 8장)</td></tr>
+<tr><td>상대</td><td>3 감독 중 하나 (초급 · 중급 · 고급)</td></tr>
+</table></div>
+
+<p>목표는 <strong>상대 감독보다 높은 점수</strong>로 무도회를 마무리하는 것.</p>
+
+<div class="lore">1780년, 오므브라 왕국. 800년 전통의 은가면 무도회에 왕궁의 원탁이 준비됩니다. 두 감독(Regista)은 각자의 손님들을 자리에 앉히고, 자정 종이 울리면 가면이 벗겨집니다.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ § 2 ═══ -->
+<section id="s2">
+<h2><span class="num">§ II</span> 화면 흐름 <span class="it">Flusso delle scene</span></h2>
+
+<pre>┌─────────────┐    ┌──────────┐   ┌─────────────┐   ┌──────────────┐
+│   Lobby     │ →  │   Court  │ ↔ │  MEZZANOTTE │ → │  RECKONING   │
+│ 감독 선택   │    │ 8 라운드 │   │  자정 컷씬  │   │  최종 채점   │
+│ (첫 방문    │    │ (커밋 ·  │   │  (R5)       │   │  (R8 이후)   │
+│  튜토리얼)  │    │  리빌)   │   │             │   │              │
+└─────────────┘    └──────────┘   └─────────────┘   └──────────────┘</pre>
+
+<div class="table-wrap"><table>
+<tr><th>씬</th><th>언제</th><th>무엇을 하는가</th></tr>
+<tr><td><strong>Lobby</strong></td><td>시작/재시작</td><td>3 감독 중 하나 선택 → <code>Entra al Ballo</code></td></tr>
+<tr><td><strong>Court</strong></td><td>R1~R8</td><td>매 라운드 카드 + 자리 선택 → <code>Sigillare ✦ 봉인</code></td></tr>
+<tr><td><strong>UNMASKING</strong></td><td>R5 진입 시</td><td>결투 유예 카드들이 일괄 판정되는 컷씬</td></tr>
+<tr><td><strong>RECKONING</strong></td><td>R8 리빌 후</td><td>자리별 점수 워크스루 + 최종 승자 발표</td></tr>
+</table></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ § 3 ═══ -->
+<section id="s3">
+<h2><span class="num">§ III</span> 라운드 진행 <span class="it">Anatomia di un round</span></h2>
+<p>한 라운드는 3단계로 진행됩니다.</p>
+
+<h3>① COMMIT · 봉인 (당신 차례)</h3>
+<ol>
+  <li><strong>손패에서 카드 선택</strong> — 5장 중 하나 탭 → 골드 링 표시 + 슬라이드 업</li>
+  <li><strong>원탁에서 자리 선택</strong> — 빈 자리 (또는 R5+ 상대 자리) 탭 → 골드 링 + "선택됨"</li>
+  <li><strong>하단 봉인 버튼 활성화</strong> → <code>Sigillare ✦ 봉인</code> (챌린지 시 <code>⚔ Sfida</code>)</li>
+</ol>
+
+<p>화면 상단 안내 문구가 지금 무엇을 해야 하는지 실시간으로 알려줍니다:</p>
+<pre>카드 없음 · 자리 없음  →  "카드를 골라주세요"
+카드 있음 · 자리 없음  →  "자리를 봉인할 곳을 선택하세요"
+카드 있음 · 자리 있음  →  "봉인 준비 완료 · 하단 버튼을 누르세요"</pre>
+
+<h3>② AI 봉인 · 상대 감독의 차례</h3>
+<p>버튼을 누르면 상대 감독이 카드를 봉인합니다. 약 0.5초의 지연 후 하단에 안내 칩:</p>
+<pre>🎭 말콤 백작이(가) 카드를 봉인합니다 · · ·</pre>
+
+<h3>③ REVEAL · 자정의 시선</h3>
+<p>양측 카드가 원탁에 배치되며:</p>
+<ul>
+  <li><strong>다른 자리</strong> → 각자 자기 자리에 그대로 배치</li>
+  <li><strong>같은 자리 (R1~R4)</strong> → <strong>결투 유예</strong> (rose glow) — MEZZANOTTE(R5)에 판정</li>
+  <li><strong>같은 자리 (R5~R8)</strong> → 즉시 결투 판정 (RPS-5) — <strong>DuelWheel</strong> 표시</li>
+  <li><strong>같은 정체 결투</strong> → <strong>동맹 (∞)</strong> — 두 카드 모두 유지, 점수 분할</li>
+</ul>
+
+<p>리빌 후 상단 스코어 헤더가 실시간 갱신 (+N 델타 펄스). 다음 라운드로 자동 진행.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ § 4 ═══ -->
+<section id="s4">
+<h2><span class="num">§ IV</span> 정체 상성 · RPS-5 <span class="it">Cinque volti, dieci rivalità</span></h2>
+<p>5가지 정체가 가위바위보 5원 상성을 이룹니다.</p>
+
+<div class="diagram">
+  <svg viewBox="0 0 400 400" width="380" height="380" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arrowP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b3a4a" opacity="0.85"/>
+      </marker>
+      <filter id="glowP">
+        <feGaussianBlur stdDeviation="2" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <rect width="400" height="400" fill="#1e1424"/>
+    <line x1="222" y1="82" x2="308" y2="150" stroke="#8b3a4a" stroke-width="2" opacity="0.7" marker-end="url(#arrowP)"/>
+    <line x1="178" y1="82" x2="92" y2="150" stroke="#8b3a4a" stroke-width="2" opacity="0.7" marker-end="url(#arrowP)"/>
+    <line x1="322" y1="182" x2="285" y2="292" stroke="#8b3a4a" stroke-width="2" opacity="0.7" marker-end="url(#arrowP)"/>
+    <line x1="308" y1="170" x2="140" y2="304" stroke="#8b3a4a" stroke-width="2" opacity="0.7" marker-end="url(#arrowP)"/>
+    <line x1="262" y1="295" x2="208" y2="92" stroke="#8b3a4a" stroke-width="2" opacity="0.7" marker-end="url(#arrowP)"/>
+    <line x1="260" y1="308" x2="97" y2="170" stroke="#8b3a4a" stroke-width="2" opacity="0.7" marker-end="url(#arrowP)"/>
+    <line x1="138" y1="295" x2="192" y2="92" stroke="#8b3a4a" stroke-width="2" opacity="0.7" marker-end="url(#arrowP)"/>
+    <line x1="145" y1="310" x2="260" y2="310" stroke="#8b3a4a" stroke-width="2" opacity="0.7" marker-end="url(#arrowP)"/>
+    <line x1="98" y1="152" x2="303" y2="152" stroke="#8b3a4a" stroke-width="2" opacity="0.7" marker-end="url(#arrowP)"/>
+    <line x1="92" y1="182" x2="115" y2="292" stroke="#8b3a4a" stroke-width="2" opacity="0.7" marker-end="url(#arrowP)"/>
+    <g filter="url(#glowP)"><circle cx="200" cy="70" r="30" fill="#e8d5b7" stroke="#f6e0aa" stroke-width="2"/><text x="200" y="79" text-anchor="middle" font-size="20">👑</text></g>
+    <text x="200" y="30" text-anchor="middle" font-family="Cinzel,serif" font-size="14" fill="#e8d5b7" letter-spacing="2">ROYALTY</text>
+    <text x="200" y="47" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="12" fill="#e8d5b7" font-style="italic">왕족</text>
+    <g filter="url(#glowP)"><circle cx="324" cy="160" r="30" fill="#8b3a4a" stroke="#c48b95" stroke-width="2"/><text x="324" y="169" text-anchor="middle" font-size="20">🗡</text></g>
+    <text x="360" y="140" text-anchor="middle" font-family="Cinzel,serif" font-size="14" fill="#c48b95" letter-spacing="2">THIEF</text>
+    <text x="360" y="157" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="12" fill="#c48b95" font-style="italic">도둑</text>
+    <g filter="url(#glowP)"><circle cx="277" cy="310" r="30" fill="#7ba3c8" stroke="#a5bec8" stroke-width="2"/><text x="277" y="319" text-anchor="middle" font-size="20">📚</text></g>
+    <text x="330" y="350" text-anchor="middle" font-family="Cinzel,serif" font-size="14" fill="#a5bec8" letter-spacing="2">SCHOLAR</text>
+    <text x="330" y="367" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="12" fill="#a5bec8" font-style="italic">학자</text>
+    <g filter="url(#glowP)"><circle cx="123" cy="310" r="30" fill="#88a065" stroke="#a5bd80" stroke-width="2"/><text x="123" y="319" text-anchor="middle" font-size="20">🏹</text></g>
+    <text x="70" y="350" text-anchor="middle" font-family="Cinzel,serif" font-size="14" fill="#a5bd80" letter-spacing="2">HUNTER</text>
+    <text x="70" y="367" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="12" fill="#a5bd80" font-style="italic">사냥꾼</text>
+    <g filter="url(#glowP)"><circle cx="76" cy="160" r="30" fill="#a68ba8" stroke="#c4b5c9" stroke-width="2"/><text x="76" y="169" text-anchor="middle" font-size="20">🔮</text></g>
+    <text x="40" y="140" text-anchor="middle" font-family="Cinzel,serif" font-size="14" fill="#c4b5c9" letter-spacing="2">MYSTIC</text>
+    <text x="40" y="157" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="12" fill="#c4b5c9" font-style="italic">신비주의자</text>
+  </svg>
+  <div class="caption">10개의 화살표: 각 정체는 정확히 2개를 이기고 2개에게 진다.</div>
+</div>
+
+<h3>관계 요약</h3>
+<div class="table-wrap"><table>
+<tr><th>정체</th><th>이기는 정체</th><th>팔레트</th></tr>
+<tr><td><span class="chip royalty">👑 왕족</span></td><td><span class="chip thief">🗡 도둑</span> · <span class="chip mystic">🔮 신비주의자</span></td><td>골드 · 아이보리</td></tr>
+<tr><td><span class="chip thief">🗡 도둑</span></td><td><span class="chip scholar">📚 학자</span> · <span class="chip hunter">🏹 사냥꾼</span></td><td>딥 로즈 · 버건디</td></tr>
+<tr><td><span class="chip scholar">📚 학자</span></td><td><span class="chip royalty">👑 왕족</span> · <span class="chip mystic">🔮 신비주의자</span></td><td>캐널 블루</td></tr>
+<tr><td><span class="chip hunter">🏹 사냥꾼</span></td><td><span class="chip royalty">👑 왕족</span> · <span class="chip scholar">📚 학자</span></td><td>세이지 그린</td></tr>
+<tr><td><span class="chip mystic">🔮 신비주의자</span></td><td><span class="chip thief">🗡 도둑</span> · <span class="chip hunter">🏹 사냥꾼</span></td><td>라벤더 · 실버</td></tr>
+</table></div>
+
+<div class="tip">각 정체는 <strong>2개를 이기고 2개에게 진다</strong>. 같은 정체를 만나면 → <strong>동맹 (Alleanza)</strong>. 두 카드 모두 유지되고 점수 분할.</div>
+
+<h4>결투 발생 시 (DuelWheel)</h4>
+<p>같은 자리에 양측 카드가 놓이면 DuelWheel이 오각형으로 나타나며:</p>
+<ul>
+  <li>승자 정체 → 패자로 향하는 화살표가 골드로 빛남</li>
+  <li>패자 카드가 붉게 물들며 exile로 이동</li>
+  <li>승자만 자리에 남음</li>
+</ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ § 5 ═══ -->
+<section id="s5">
+<h2><span class="num">§ V</span> 자리 · Slot Buff <span class="it">Otto sedie del re</span></h2>
+<p>원탁의 8자리는 각각 특정 정체를 총애합니다. 매칭 시 큰 보너스를 받고, 매칭 안 되면 기본 표면 점수만 계산합니다.</p>
+
+<div class="diagram">
+  <svg viewBox="0 0 720 480" width="720" height="480" xmlns="http://www.w3.org/2000/svg" style="max-width:100%">
+    <defs>
+      <linearGradient id="parchG" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#f5efe3"/><stop offset="100%" stop-color="#e8d5b7"/></linearGradient>
+      <filter id="softshadow2"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#5b4636" flood-opacity="0.25"/></filter>
+    </defs>
+    <rect width="720" height="480" fill="#1e1424"/>
+    <ellipse cx="360" cy="240" rx="340" ry="200" fill="url(#parchG)" opacity="0.06"/>
+    <ellipse cx="360" cy="240" rx="240" ry="140" fill="none" stroke="#e8d5b7" stroke-width="1.5" opacity="0.5" stroke-dasharray="4 6"/>
+    <g filter="url(#softshadow2)">
+      <rect x="315" y="60" width="90" height="72" rx="6" fill="url(#parchG)"/>
+      <text x="360" y="80" text-anchor="middle" font-family="Cinzel,serif" font-size="12" fill="#5b4636" font-weight="bold">I</text>
+      <text x="360" y="96" text-anchor="middle" font-family="Cinzel,serif" font-size="10" fill="#5b4636" font-style="italic">Trono</text>
+      <text x="360" y="110" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="9" fill="#8b6f47">왕좌</text>
+      <text x="360" y="127" text-anchor="middle" font-size="14">👑</text>
+      <text x="392" y="80" text-anchor="end" font-family="monospace" font-size="10" fill="#c48b6e">+5</text>
+    </g>
+    <g filter="url(#softshadow2)">
+      <rect x="500" y="105" width="90" height="72" rx="6" fill="url(#parchG)"/>
+      <text x="545" y="125" text-anchor="middle" font-family="Cinzel,serif" font-size="12" fill="#5b4636" font-weight="bold">II</text>
+      <text x="545" y="141" text-anchor="middle" font-family="Cinzel,serif" font-size="10" fill="#5b4636" font-style="italic">Vicolo</text>
+      <text x="545" y="155" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="9" fill="#8b6f47">뒷골목</text>
+      <text x="545" y="172" text-anchor="middle" font-size="14">🗡</text>
+      <text x="577" y="125" text-anchor="end" font-family="monospace" font-size="10" fill="#c48b6e">+3</text>
+    </g>
+    <g filter="url(#softshadow2)">
+      <rect x="555" y="204" width="90" height="72" rx="6" fill="url(#parchG)"/>
+      <text x="600" y="224" text-anchor="middle" font-family="Cinzel,serif" font-size="12" fill="#5b4636" font-weight="bold">III</text>
+      <text x="600" y="240" text-anchor="middle" font-family="Cinzel,serif" font-size="10" fill="#5b4636" font-style="italic">Biblioteca</text>
+      <text x="600" y="254" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="9" fill="#8b6f47">도서관</text>
+      <text x="600" y="271" text-anchor="middle" font-size="14">📚</text>
+      <text x="632" y="224" text-anchor="end" font-family="monospace" font-size="10" fill="#c48b6e">+4</text>
+    </g>
+    <g filter="url(#softshadow2)">
+      <rect x="500" y="303" width="90" height="72" rx="6" fill="url(#parchG)"/>
+      <text x="545" y="323" text-anchor="middle" font-family="Cinzel,serif" font-size="12" fill="#5b4636" font-weight="bold">IV</text>
+      <text x="545" y="339" text-anchor="middle" font-family="Cinzel,serif" font-size="10" fill="#5b4636" font-style="italic">Foresta</text>
+      <text x="545" y="353" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="9" fill="#8b6f47">숲가</text>
+      <text x="545" y="370" text-anchor="middle" font-size="14">🏹</text>
+      <text x="577" y="323" text-anchor="end" font-family="monospace" font-size="10" fill="#c48b6e">+4</text>
+    </g>
+    <g filter="url(#softshadow2)">
+      <rect x="315" y="348" width="90" height="72" rx="6" fill="url(#parchG)"/>
+      <text x="360" y="368" text-anchor="middle" font-family="Cinzel,serif" font-size="12" fill="#5b4636" font-weight="bold">V</text>
+      <text x="360" y="384" text-anchor="middle" font-family="Cinzel,serif" font-size="9" fill="#5b4636" font-style="italic">Cuore del Ballo</text>
+      <text x="360" y="398" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="9" fill="#8b6f47">무도회 중심</text>
+      <text x="360" y="415" text-anchor="middle" font-size="14">🏹</text>
+      <text x="392" y="368" text-anchor="end" font-family="monospace" font-size="9" fill="#c48b6e">+2 ×2</text>
+    </g>
+    <g filter="url(#softshadow2)">
+      <rect x="130" y="303" width="90" height="72" rx="6" fill="url(#parchG)"/>
+      <text x="175" y="323" text-anchor="middle" font-family="Cinzel,serif" font-size="12" fill="#5b4636" font-weight="bold">VI</text>
+      <text x="175" y="339" text-anchor="middle" font-family="Cinzel,serif" font-size="10" fill="#5b4636" font-style="italic">Sfera</text>
+      <text x="175" y="353" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="9" fill="#8b6f47">수정구</text>
+      <text x="175" y="370" text-anchor="middle" font-size="14">🔮</text>
+      <text x="207" y="323" text-anchor="end" font-family="monospace" font-size="10" fill="#c48b6e">+4</text>
+    </g>
+    <g filter="url(#softshadow2)">
+      <rect x="75" y="204" width="90" height="72" rx="6" fill="url(#parchG)"/>
+      <text x="120" y="224" text-anchor="middle" font-family="Cinzel,serif" font-size="12" fill="#5b4636" font-weight="bold">VII</text>
+      <text x="120" y="240" text-anchor="middle" font-family="Cinzel,serif" font-size="10" fill="#5b4636" font-style="italic">Accademia</text>
+      <text x="120" y="254" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="9" fill="#8b6f47">학문</text>
+      <text x="120" y="271" text-anchor="middle" font-size="14">📚</text>
+      <text x="152" y="224" text-anchor="end" font-family="monospace" font-size="10" fill="#c48b6e">+3</text>
+    </g>
+    <g filter="url(#softshadow2)">
+      <rect x="130" y="105" width="90" height="72" rx="6" fill="url(#parchG)"/>
+      <text x="175" y="125" text-anchor="middle" font-family="Cinzel,serif" font-size="12" fill="#5b4636" font-weight="bold">VIII</text>
+      <text x="175" y="141" text-anchor="middle" font-family="Cinzel,serif" font-size="9" fill="#5b4636" font-style="italic">Fianco del Re</text>
+      <text x="175" y="155" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="9" fill="#8b6f47">왕 옆자리</text>
+      <text x="175" y="172" text-anchor="middle" font-size="14">🔮</text>
+      <text x="207" y="125" text-anchor="end" font-family="monospace" font-size="9" fill="#c48b6e">+3 종별</text>
+    </g>
+    <text x="360" y="234" text-anchor="middle" font-family="Cinzel,serif" font-size="22" fill="#e8d5b7" letter-spacing="4" opacity="0.75">CORTE</text>
+    <text x="360" y="256" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="14" fill="#e8d5b7" font-style="italic" opacity="0.65">왕궁 원탁</text>
+    <text x="360" y="278" text-anchor="middle" font-size="18">✦</text>
+  </svg>
+  <div class="caption">8 자리와 각 자리의 총애 정체 · 슬롯 버프 보너스</div>
+</div>
+
+<h3>자리 상세</h3>
+<div class="table-wrap"><table>
+<tr><th>#</th><th>이탈리아어</th><th>한국어</th><th>총애</th><th>보너스</th><th>특수 규칙</th></tr>
+<tr><td>I</td><td><strong>Trono</strong></td><td>왕좌</td><td><span class="chip royalty">👑 왕족</span></td><td>+5</td><td>—</td></tr>
+<tr><td>II</td><td><strong>Vicolo</strong></td><td>뒷골목</td><td><span class="chip thief">🗡 도둑</span></td><td>+3</td><td>—</td></tr>
+<tr><td>III</td><td><strong>Biblioteca</strong></td><td>도서관</td><td><span class="chip scholar">📚 학자</span></td><td>+4</td><td>—</td></tr>
+<tr><td>IV</td><td><strong>Foresta</strong></td><td>숲가</td><td><span class="chip hunter">🏹 사냥꾼</span></td><td>+4</td><td>—</td></tr>
+<tr><td>V</td><td><strong>Cuore del Ballo</strong></td><td>무도회 중심</td><td><span class="chip hunter">🏹 사냥꾼</span></td><td>+2</td><td>인접(IV/VI) 아이콘 매치 시 ×2 (5→10)</td></tr>
+<tr><td>VI</td><td><strong>Sfera</strong></td><td>수정구</td><td><span class="chip mystic">🔮 신비주의자</span></td><td>+4</td><td>—</td></tr>
+<tr><td>VII</td><td><strong>Accademia</strong></td><td>학문</td><td><span class="chip scholar">📚 학자</span></td><td>+3</td><td>—</td></tr>
+<tr><td>VIII</td><td><strong>Fianco del Re</strong></td><td>왕 옆자리</td><td><span class="chip mystic">🔮 신비주의자</span></td><td>+3</td><td>정체 종류당 +3 (일반 +2 → +3)</td></tr>
+</table></div>
+
+<h3>자리 사용 팁</h3>
+<ul>
+  <li><strong>Trono (+5)</strong> — 가장 큰 슬롯 버프. 왕족 카드가 있으면 우선 노려라.</li>
+  <li><strong>Sfera (+4)</strong> — 신비주의자 카드에게 안전한 슬롯.</li>
+  <li><strong>Cuore del Ballo</strong> — 인접(IV/VI) 아이콘 매치 시 배수 → 콤보 노리기.</li>
+  <li><strong>Fianco del Re</strong> — 손에 다양한 정체가 있을 때 시너지.</li>
+  <li>매칭 안 되는 카드는 표면 점수만 → 표면 낮은 카드는 매칭 자리로.</li>
+</ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ § 6 ═══ -->
+<section id="s6">
+<h2><span class="num">§ VI</span> 8라운드 흐름과 자정 <span class="it">L'ordine della notte</span></h2>
+
+<div class="diagram">
+  <svg viewBox="0 0 900 260" width="880" height="260" xmlns="http://www.w3.org/2000/svg" style="max-width:100%">
+    <defs>
+      <marker id="arrow2f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c48b6e"/></marker>
+      <linearGradient id="parchG2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#f5efe3"/><stop offset="100%" stop-color="#e8d5b7"/></linearGradient>
+      <filter id="csh2"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#5b4636" flood-opacity="0.3"/></filter>
+    </defs>
+    <rect width="900" height="260" fill="#1e1424"/>
+    <g font-family="Cinzel,serif" font-size="14" fill="#5b4636" text-anchor="middle">
+      <g filter="url(#csh2)"><rect x="30" y="80" width="90" height="90" rx="8" fill="url(#parchG2)"/><text x="75" y="105">R I</text><text x="75" y="122" font-size="10" font-style="italic">Commit</text><text x="75" y="140" font-size="9" fill="#8b6f47">봉인</text><text x="75" y="158" font-size="9" fill="#8b6f47" font-style="italic">둘 다 배치</text></g>
+      <path d="M 122 125 L 148 125" stroke="#c48b6e" stroke-width="1.5" marker-end="url(#arrow2f)"/>
+      <g filter="url(#csh2)"><rect x="150" y="80" width="90" height="90" rx="8" fill="url(#parchG2)"/><text x="195" y="105">R II</text><text x="195" y="122" font-size="10" font-style="italic">Commit</text><text x="195" y="140" font-size="9" fill="#8b6f47">봉인</text></g>
+      <path d="M 242 125 L 268 125" stroke="#c48b6e" stroke-width="1.5" marker-end="url(#arrow2f)"/>
+      <g filter="url(#csh2)"><rect x="270" y="80" width="90" height="90" rx="8" fill="url(#parchG2)"/><text x="315" y="105">R III</text><text x="315" y="122" font-size="10" font-style="italic">Evento</text><text x="315" y="140" font-size="9" fill="#8b6f47">이벤트</text><text x="315" y="158" font-size="9" fill="#8b6f47" font-style="italic">왕궁 사건</text></g>
+      <path d="M 362 125 L 388 125" stroke="#c48b6e" stroke-width="1.5" marker-end="url(#arrow2f)"/>
+      <g filter="url(#csh2)"><rect x="390" y="80" width="90" height="90" rx="8" fill="url(#parchG2)"/><text x="435" y="105">R IV</text><text x="435" y="122" font-size="10" font-style="italic">Commit</text><text x="435" y="140" font-size="9" fill="#8b6f47">봉인</text></g>
+      <path d="M 482 125 L 508 125" stroke="#c48b6e" stroke-width="1.5" marker-end="url(#arrow2f)"/>
+      <g filter="url(#csh2)"><rect x="510" y="65" width="100" height="120" rx="10" fill="#a68ba8" stroke="#e8d5b7" stroke-width="2"/><text x="560" y="95" fill="#f5efe3">R V</text><text x="560" y="115" font-size="10" fill="#f5efe3" font-style="italic">Mezzanotte</text><text x="560" y="132" font-size="9" fill="#f5efe3">자정</text><text x="560" y="150" font-size="9" fill="#f5efe3" font-style="italic">가면 벗김</text><text x="560" y="167" font-size="8" fill="#f5efe3">챌린지 개방!</text></g>
+      <path d="M 612 125 L 638 125" stroke="#c48b6e" stroke-width="1.5" marker-end="url(#arrow2f)"/>
+      <g filter="url(#csh2)"><rect x="640" y="80" width="90" height="90" rx="8" fill="url(#parchG2)"/><text x="685" y="105">R VI</text><text x="685" y="122" font-size="10" font-style="italic">Evento</text><text x="685" y="140" font-size="9" fill="#8b6f47">이벤트</text></g>
+      <path d="M 732 125 L 758 125" stroke="#c48b6e" stroke-width="1.5" marker-end="url(#arrow2f)"/>
+      <g filter="url(#csh2)"><rect x="760" y="80" width="60" height="90" rx="8" fill="url(#parchG2)"/><text x="790" y="105">R VII</text><text x="790" y="140" font-size="9" fill="#8b6f47">봉인</text></g>
+      <path d="M 822 125 L 838 125" stroke="#c48b6e" stroke-width="1.5" marker-end="url(#arrow2f)"/>
+      <g filter="url(#csh2)"><rect x="840" y="65" width="55" height="120" rx="10" fill="#8b3a4a" stroke="#e8d5b7" stroke-width="2"/><text x="867" y="95" fill="#f5efe3" font-size="12">VIII</text><text x="867" y="115" font-size="9" fill="#f5efe3" font-style="italic">Reckoning</text><text x="867" y="140" font-size="9" fill="#f5efe3">채점</text><text x="867" y="160" font-size="8" fill="#f5efe3" font-style="italic">최종</text></g>
+    </g>
+    <text x="450" y="30" text-anchor="middle" font-family="Cinzel,serif" font-size="22" fill="#e8d5b7" letter-spacing="4">ORDINE · 8라운드 흐름</text>
+    <text x="450" y="52" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="13" fill="#e8d5b7" font-style="italic" opacity="0.7">각 라운드마다 두 감독이 카드 한 장씩 봉인 → 리빌</text>
+    <text x="450" y="220" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="12" fill="#c48b95" font-style="italic">R1~R4 같은 자리 충돌 = 결투 유예 → R5에 일괄 판정</text>
+    <text x="450" y="240" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="12" fill="#c48b95" font-style="italic">R5부터 챌린지(⚔) 가능 · 상대 자리 노리기</text>
+  </svg>
+</div>
+
+<h3>라운드 유형</h3>
+<div class="table-wrap"><table>
+<tr><th>R</th><th>유형</th><th>특이사항</th></tr>
+<tr><td>I-II</td><td>봉인</td><td>서막. 정보 없이 시작.</td></tr>
+<tr><td>III</td><td>봉인 + <strong>이벤트</strong></td><td>왕궁 이벤트 발동.</td></tr>
+<tr><td>IV</td><td>봉인</td><td>자리 채워지기 시작.</td></tr>
+<tr><td><strong>V</strong></td><td><strong>MEZZANOTTE (자정)</strong></td><td>결투 유예 판정 + 챌린지(⚔) 개방.</td></tr>
+<tr><td>VI</td><td>봉인 + <strong>이벤트</strong></td><td>두 번째 왕궁 이벤트.</td></tr>
+<tr><td>VII</td><td>봉인</td><td>후반전.</td></tr>
+<tr><td>VIII</td><td>봉인 → <strong>RECKONING</strong></td><td>리빌 직후 자동 채점.</td></tr>
+</table></div>
+
+<h3>R5의 두 가지 큰 변화</h3>
+<h4>A. 결투 유예 판정 (UNMASKING)</h4>
+<ul>
+  <li>R1~R4에 같은 자리 충돌 → 카드 face-down으로 유예됨</li>
+  <li>R5 진입 시 자동으로 UNMASKING 씬으로 전환</li>
+  <li>유예된 자리마다 카드 플립 애니메이션 → RPS-5로 판정</li>
+  <li><strong>알레안차(동맹)</strong>: 같은 정체끼리 → 하트 아이콘 + 둘 다 유지 + 점수 분할</li>
+</ul>
+
+<h4>B. 챌린지(⚔) 개방</h4>
+<ul>
+  <li>R5 이후로는 <strong>상대 자리도 탭</strong> 가능</li>
+  <li>자리가 꽉 찼어도 상대 자리 노려 카드 교체 시도</li>
+  <li>챌린지 성공 시 → 상대 카드 exile, 내 카드가 그 자리에</li>
+</ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ § 7 ═══ -->
+<section id="s7">
+<h2><span class="num">§ VII</span> 왕궁 이벤트 <span class="it">Eventi di Corte</span></h2>
+<p>R3와 R6에 자동 발동. 6개 이벤트가 있습니다.</p>
+
+<div class="table-wrap"><table>
+<tr><th>이벤트</th><th>효과</th></tr>
+<tr><td>👑 <strong>왕의 도착</strong> · Il Re Arriva</td><td>왕족 카드 +2</td></tr>
+<tr><td>🗡 <strong>도둑 검거</strong> · Ladri Catturati</td><td>도둑 카드 −1</td></tr>
+<tr><td>📚 <strong>학자 심포지엄</strong> · Simposio</td><td>학자 매칭 규칙 완화 (±2 seat number 허용)</td></tr>
+<tr><td>🎭 <strong>가면 축제</strong> · Festival delle Maschere</td><td>모든 카드 표면 +1</td></tr>
+<tr><td>🔮 <strong>신비 안개</strong> · Nebbia Mistica</td><td>신비주의자 카드 +2</td></tr>
+<tr><td>🏹 <strong>사냥 대회</strong> · Gran Caccia</td><td>사냥꾼 카드 +2</td></tr>
+</table></div>
+
+<p>이벤트 배너는 화면 상단에 짧게 나타나고 활성 이벤트 목록에 추가됩니다.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ § 8 ═══ -->
+<section id="s8">
+<h2><span class="num">§ VIII</span> 챌린지 · Sfida <span class="it">Attaccare dopo la mezzanotte</span></h2>
+
+<h3>언제 발동</h3>
+<p>R5부터 원탁 상황이 자주 이렇게 됩니다:</p>
+<ul>
+  <li><strong>8자리 모두 채워짐</strong> (R1~R4에 순차적으로 배치)</li>
+  <li>이제 카드를 어디에 놓지?</li>
+</ul>
+<p>→ <strong>상대 자리를 노려라!</strong> R5부터는 상대 자리를 탭할 수 있습니다.</p>
+
+<h3>UI 표시</h3>
+<ul>
+  <li><strong>상대 자리 테두리</strong> → 로즈색으로 변경 + 유혹 펄스 애니메이션</li>
+  <li><strong>하단 리본</strong> → "⚔ 챌린지" 표시</li>
+  <li><strong>선택 시</strong> → "⚔ 챌린지 대상" 펄스</li>
+  <li><strong>하단 버튼</strong> → <code>⚔ Sfida · 챌린지</code> (로즈 색 · 골드 대신)</li>
+</ul>
+
+<h3>챌린지 성공 조건</h3>
+<ul>
+  <li>내 카드 정체가 상대 카드 정체를 <strong>RPS-5로 이기면 성공</strong></li>
+  <li>성공 시: 상대 카드 → exile (몰락 카운트 +1), 내 카드가 그 자리 차지</li>
+  <li>실패 시: 내 카드가 exile, 상대 카드 유지</li>
+</ul>
+
+<div class="tip">강한 슬롯 버프 자리 탈환 · Trono(+5)에 상대 왕족? 학자로 챌린지 성공. 몰락 임박 상대(exile ≥ 4)를 챌린지 성공으로 몰락(총점 반감) 유도.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ § 9 ═══ -->
+<section id="s9">
+<h2><span class="num">§ IX</span> 몰락 · Rovina <span class="it">IL CROLLO</span></h2>
+
+<h3>발동 조건</h3>
+<p><strong>exile ≥ 5 카드</strong> → 해당 감독의 최종 점수 <strong>반감</strong> (0.5 배수).</p>
+
+<h3>몰락 시 UI</h3>
+<ul>
+  <li>RECKONING Phase 4에서 로즈 배너 <strong>"몰락 · IL CROLLO"</strong> 슬라이드 인</li>
+  <li>해당 감독 점수 카운터가 실시간으로 반감</li>
+  <li>시각적 경고: 상대 exile ≥ 3 시 사이드에 <strong>몰락 위험</strong> 표시</li>
+</ul>
+
+<h3>몰락 피하기 팁</h3>
+<ul>
+  <li><strong>결투 지지 않기</strong> — 유예 결투 판정 전에 손패의 정체 파악</li>
+  <li><strong>동맹 유도</strong> — 같은 정체 만나면 exile 없이 점수 분할 → 안전</li>
+  <li><strong>약한 카드 자기 자리에 못박기</strong> — 상대가 챌린지해도 잃을 게 적음</li>
+</ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ § 10 ═══ -->
+<section id="s10">
+<h2><span class="num">§ X</span> 점수 계산 <span class="it">Reckoning</span></h2>
+
+<h3>공식</h3>
+<pre>표면 점수 · Base
++ 정체 규칙 · Identity     (사냥꾼 인접, 학자 매치 등)
++ 슬롯 버프 · Slot Buff    (자리 총애 정체 매칭 시)
++ 이벤트 보너스 · Event    (R3/R6 활성 이벤트)
++ 콤보 보너스 · Combo      (다양성, 배수 등)
+− 몰락 페널티 · Exile      (exile 장당 -4, ≥5장이면 총점 반감)
+─────────────────────────────
+최종 점수 · Total</pre>
+
+<h3>자리별 세리머니 (RECKONING Phase 2)</h3>
+<p>R8 리빌 후 자동으로 8자리를 순차적으로 워크스루:</p>
+<ul>
+  <li>I → II → ... → VIII (각 1.5초씩, 총 12초)</li>
+  <li>각 자리마다 카드 정보 + 획득 점수 칩 표시</li>
+  <li>상단 스코어 카운터가 실시간 티커로 상승</li>
+  <li>콤보 발동 시 오른쪽 토스트로 별도 안내</li>
+</ul>
+
+<h3>결과 화면</h3>
+<ul>
+  <li>두 감독 최종 숫자 (Cinzel 대형 폰트)</li>
+  <li>승자 이름에 <strong>로렐 리스</strong> (올리브 화환) 감쌈</li>
+  <li>"말콤 백작 승리 · 47 vs 41" 배너</li>
+  <li><code>다시 도전</code> (같은 감독) · <code>무도회 돌아가기</code> (로비)</li>
+</ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ § 11 ═══ -->
+<section id="s11">
+<h2><span class="num">§ XI</span> 감독별 전략 <span class="it">Contro i Registi</span></h2>
+<p>3명의 라이벌 감독은 각기 다른 성향을 보입니다.</p>
+
+<div class="rivals">
+  <div class="rival novizio">
+    <h4>🥉 말콤 백작</h4>
+    <div class="diff">Novizio · 초급</div>
+    <blockquote>젊음이 서투름을 가면처럼 두른다.</blockquote>
+    <p><strong>행동</strong>: 랜덤 착수. 정체 상성 계산 없음.</p>
+    <p><strong>약점</strong>: 슬롯 버프 최적화 못 함. 챌린지도 하지 않음.</p>
+    <p><strong>공략</strong>: 강한 자리(Trono, Biblioteca)를 안심하고 노려라. 결투를 두려워 말고 매칭 자리 우선 확보.</p>
+  </div>
+
+  <div class="rival adepto">
+    <h4>🥈 이자벨라 부인</h4>
+    <div class="diff">Adepto · 중급</div>
+    <blockquote>슬픔은 냉정한 계산이 된다.</blockquote>
+    <p><strong>행동</strong>: 슬롯 버프 argmax + 속삭임 카드 우선 사용 + 20% 확률로 R5+ 챌린지.</p>
+    <p><strong>약점</strong>: 그리디 · 트랩 셋업 없음. RPS-5로 명확히 이길 수 있는 상황에만 챌린지.</p>
+    <p><strong>공략</strong>: 그녀가 좋아할 자리(Sfera +4, Biblioteca +4)를 먼저 채워라. 유예 결투로 심리전 유도.</p>
+  </div>
+
+  <div class="rival maestro">
+    <h4>🥇 L'Ombra · 그림자</h4>
+    <div class="diff">Maestro · 고급</div>
+    <blockquote>그림자에게는 이름이 없다.</blockquote>
+    <p><strong>행동</strong>: RPS-5 위협 모델링 + 슬롯 버프 부정 + R5+ 공격적 챌린지 + 유예 결투 트랩.</p>
+    <p><strong>약점</strong>: 시드 노이즈 ±0.5 → 살짝 예측 가능. 손패 정보를 완벽히 볼 수 없음.</p>
+    <p><strong>공략</strong>: 손패의 정체를 다양하게 유지 → RPS-5 모델링 어렵게. 조기 자리 확보보다 자정 결투 유도가 안전.</p>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ § 12 ═══ -->
+<section id="s12">
+<h2><span class="num">§ XII</span> 실전 팁 <span class="it">Consigli in campo</span></h2>
+
+<h3>✦ 오프닝 (R1~R2)</h3>
+<ul>
+  <li>첫 카드는 <strong>표면 점수 낮은 카드</strong>를 매칭 자리로 봉인. 나중에 강한 카드로 슬롯 버프 극대화 여지 남기기.</li>
+  <li>상대가 강한 자리(Trono, Sfera)를 노리면 <strong>일부러 같은 자리</strong> → 유예 결투 → 정체가 우세하면 R5에 승리.</li>
+</ul>
+
+<h3>✦ 미드게임 (R3~R4)</h3>
+<ul>
+  <li>R3 이벤트 확인 후 손패 리플랜.
+    <ul>
+      <li>🏹 사냥 대회 → 사냥꾼 카드 프리미엄</li>
+      <li>🔮 신비 안개 → 신비주의자 프리미엄</li>
+    </ul>
+  </li>
+  <li>자리는 R4까지 다 채우면 R5 챌린지 기회 많아짐 (양쪽 상대 카드 노림).</li>
+</ul>
+
+<h3>✦ 자정 (R5 UNMASKING)</h3>
+<ul>
+  <li><strong>결투 유예된 카드</strong>의 정체를 미리 파악. 손패에 이길 정체 있으면 대비 O.</li>
+  <li><strong>동맹 유도</strong> = 양쪽 다 점수 획득 = 상대만 점수 획득보다 나음.</li>
+  <li>챌린지가 개방됐으므로 <strong>강한 자리에 있는 상대 카드</strong>를 노리는 걸 R5부터 시작.</li>
+</ul>
+
+<h3>✦ 후반 (R6~R8)</h3>
+<ul>
+  <li>몰락 임박(exile ≥ 3) → 더 이상 결투 지지 마라. 확실히 이기는 챌린지 or 안전한 배치.</li>
+  <li>상대의 몰락 유도(exile ≥ 4 상태 상대에게 챌린지 승) → 총점 반감 대박.</li>
+  <li>R8 리빌 전 콤보 최대화 상태 만들기 (정체 다양성, 아이콘 매칭).</li>
+</ul>
+
+<h3>✦ 속삭임(✦) 카드</h3>
+<ul>
+  <li>카드 우상단 ✦ 마크가 있으면 <strong>속삭임</strong> 카드.</li>
+  <li>리빌 시 상대 손패 정체 1장 유출됨 → 판정에 큰 유리.</li>
+  <li>정보 가치가 크므로 <strong>점수 델타가 작을 때 우선 봉인</strong> (탐색 초반에 매장하기).</li>
+</ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ § 13 ═══ -->
+<section id="s13">
+<h2><span class="num">§ XIII</span> 자주 하는 실수 <span class="it">Errori comuni</span></h2>
+
+<div class="table-wrap"><table>
+<tr><th>실수</th><th>왜 문제</th><th>대책</th></tr>
+<tr><td>표면 4 카드를 매칭 안 되는 자리에</td><td>+5 슬롯 버프 놓침 → -5 손해</td><td>표면 4는 반드시 매칭 자리로</td></tr>
+<tr><td>R5 전까지 자리 다 채움</td><td>상대에게 유예 결투 기회 안 줌</td><td>일부러 같은 자리 클래시로 유예 유도</td></tr>
+<tr><td>R6~R7에 exile 4장 이상 방치</td><td>몰락 위험, 상대의 챌린지 표적</td><td>R6부터 안전 플레이 · 방어형 봉인</td></tr>
+<tr><td>속삭임(✦) 카드 마지막에 사용</td><td>정보를 얻어도 활용할 라운드 없음</td><td>R2~R4에 미리 사용해서 상대 정체 파악</td></tr>
+<tr><td>L'Ombra 상대로 강한 자리 조기 확보</td><td>그가 유예 결투로 되찾음</td><td>자리 확보 대신 손패 다양성 유지</td></tr>
+</table></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ § 14 ═══ -->
+<section id="s14">
+<h2><span class="num">§ XIV</span> 규칙 요약 카드 <span class="it">Guida in tasca</span></h2>
+
+<div class="rule-card">
+<div style="font-family:'Cinzel',serif;letter-spacing:0.25em;color:var(--gold-soft);text-align:center;font-size:14px;margin-bottom:16px;">MASQUERADE · One-Card Rules</div>
+<ul>
+  <li>8 rounds · Hand 5 · Deck 40</li>
+  <li>RPS-5: 각 정체 2 이기고 2 진다</li>
+  <li>같은 자리 R1-R4 → 결투 유예 (R5 판정)</li>
+  <li>같은 자리 R5-R8 → 즉시 결투</li>
+  <li>같은 정체 → 동맹, 둘 다 유지, 점수 반</li>
+  <li>R5+ 챌린지: 상대 자리 노려 카드 교체</li>
+  <li>R3, R6 왕궁 이벤트</li>
+  <li>Exile ≥ 5 → 몰락 · 총점 반감</li>
+  <li>점수 = 표면 + 정체 + 슬롯 + 이벤트 + 콤보 − 몰락</li>
+</ul>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ § 15 ═══ -->
+<section id="s15">
+<h2><span class="num">§ XV</span> 더 알아보기 <span class="it">Approfondimenti</span></h2>
+
+<h3>프로젝트 문서 (GitHub)</h3>
+<ul>
+  <li><a href="https://github.com/devload/masquerade-boardgame/blob/main/docs/WORLD.md">WORLD.md</a> — 세계관 · 배경 스토리 · 3 감독 상세</li>
+  <li><a href="https://github.com/devload/masquerade-boardgame/blob/main/docs/CHARACTERS.md">CHARACTERS.md</a> — 40 손님 카드 상세 (이름 · 정체 · 표면 · 아이콘)</li>
+  <li><a href="https://github.com/devload/masquerade-boardgame/blob/main/docs/UX.md">UX.md</a> — 씬별 UX 설계 문서</li>
+  <li><a href="https://github.com/devload/masquerade-boardgame/blob/main/docs/GAMEPLAN.md">GAMEPLAN.md</a> — 규칙 브리프 (개발 참조용)</li>
+</ul>
+
+<h3>이미지 생성 리소스</h3>
+<ul>
+  <li><a href="https://github.com/devload/masquerade-boardgame/blob/main/art/prompts/IMAGE_PROMPTS.md">IMAGE_PROMPTS.md</a> — 60개 이미지 프롬프트 (Midjourney/GPT용)</li>
+</ul>
+
+<h3>리포지토리 · 배포</h3>
+<ul>
+  <li>Repo: <a href="https://github.com/devload/masquerade-boardgame">github.com/devload/masquerade-boardgame</a></li>
+  <li>Live: <a href="https://masquerade-boardgame.vercel.app">masquerade-boardgame.vercel.app</a></li>
+</ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ FOOTER ═══ -->
+<footer class="gfooter">
+  <div>Buon divertimento! · 즐거운 무도회 되시길.</div>
+  <div style="margin-top:8px;"><a href="https://masquerade-boardgame.vercel.app">▸ Play MASQUERADE</a></div>
+  <div class="mono-small" style="margin-top:16px;">Ombra Kingdom · MDCCLXXX</div>
+</footer>
+
+</div>
+</body>
+</html>
