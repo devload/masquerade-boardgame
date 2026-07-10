@@ -1,0 +1,979 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>07c · MASQUERADE — RECKONING (Shared Court)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night: #0a050f;
+    --night2: #1a0f1e;
+    --violet-deep: #3d1f4a;
+    --violet-mid: #5d2f6a;
+    --bronze: #8b6f47;
+    --bronze-dim: #5d4a30;
+    --gold: #d4a574;
+    --gold-bright: #e8bd8a;
+    --silver: #c0c0c0;
+    --silver-dim: #8a8a8a;
+    --cream: #f0e6d2;
+    --red: #8b0000;
+    --red-glow: #b03030;
+    --mist: #4a5c6a;
+    --moss: #88a065;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background:
+      radial-gradient(120% 80% at 50% 50%, #14091a 0%, #08040c 55%, #020104 100%);
+    color: var(--cream);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 12px;
+  }
+
+  /* device / stage frame */
+  .stage-wrap{
+    position: relative;
+    width: 375px;
+    height: 812px;
+    border-radius: 44px;
+    overflow: hidden;
+    background:
+      radial-gradient(90% 55% at 50% 35%, #251432 0%, #14091b 55%, #06030b 100%);
+    box-shadow:
+      0 0 0 1px rgba(212,165,116,0.10),
+      0 0 60px rgba(212,165,116,0.10),
+      0 40px 140px rgba(0,0,0,0.85),
+      inset 0 0 120px rgba(0,0,0,0.55);
+  }
+
+  body::before{
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(60% 55% at 50% 50%, transparent 0%, transparent 55%, #000 100%);
+    pointer-events: none;
+    z-index: 20;
+  }
+
+  /* inner ceremony vignette */
+  .stage-wrap::after{
+    content:'';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(85% 65% at 50% 40%, transparent 45%, rgba(0,0,0,0.72) 100%);
+    pointer-events: none;
+    z-index: 6;
+  }
+
+  /* warm radial gold glow from center */
+  .warmth{
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(50% 32% at 50% 46%, rgba(232,189,138,0.18) 0%, rgba(212,165,116,0.05) 45%, transparent 75%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* floating gold dust */
+  .glitter{
+    position: absolute; inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 5;
+  }
+  .glitter span{
+    position: absolute;
+    top: -12px;
+    width: 2px; height: 2px;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0;
+    box-shadow: 0 0 6px rgba(212,165,116,0.9);
+    animation: fall linear infinite;
+  }
+  @keyframes fall{
+    0%{ transform: translateY(0) translateX(0); opacity: 0; }
+    8%{ opacity: 0.85; }
+    100%{ transform: translateY(880px) translateX(var(--dx, 0px)); opacity: 0; }
+  }
+
+  .stage{
+    position: absolute;
+    inset: 0;
+    padding: 14px 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 8;
+    overflow: hidden;
+  }
+
+  /* ─── header ─── */
+  .topbar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .chip-num{
+    font-family: 'Space Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    color: var(--gold);
+    background: rgba(212,165,116,0.10);
+    border: 1px solid rgba(212,165,116,0.35);
+    padding: 4px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+  }
+  .chip-progress{
+    font-family: 'Space Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    color: var(--cream);
+    opacity: 0.72;
+  }
+  .chip-progress b{
+    color: var(--gold-bright);
+    font-weight: 700;
+  }
+
+  /* ─── live scoreboard ─── */
+  .scoreboard{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 2px;
+  }
+  .score-card{
+    position: relative;
+    padding: 9px 10px 10px;
+    border-radius: 12px;
+    background:
+      linear-gradient(180deg, rgba(61,31,74,0.55) 0%, rgba(26,15,30,0.85) 100%);
+    border: 1px solid rgba(139,111,71,0.35);
+    box-shadow: inset 0 0 24px rgba(0,0,0,0.45);
+  }
+  .score-card.me{
+    border-color: rgba(212,165,116,0.55);
+    box-shadow:
+      inset 0 0 24px rgba(0,0,0,0.45),
+      0 0 22px rgba(212,165,116,0.14);
+  }
+  .score-card.opp{
+    border-color: rgba(192,192,192,0.40);
+  }
+  .score-card .who{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .who .name{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--cream);
+    opacity: 0.9;
+  }
+  .who .lead{
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.14em;
+    color: var(--night2);
+    background: var(--gold);
+    padding: 2px 6px;
+    border-radius: 999px;
+    text-transform: uppercase;
+  }
+  .score-card .total{
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 1;
+    margin-top: 3px;
+    letter-spacing: 0.02em;
+  }
+  .score-card.me .total{
+    color: var(--gold);
+    text-shadow: 0 0 18px rgba(212,165,116,0.55);
+  }
+  .score-card.opp .total{
+    color: var(--silver);
+    text-shadow: 0 0 12px rgba(192,192,192,0.35);
+  }
+  .score-card .breakdown{
+    margin-top: 4px;
+    font-family: 'Space Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.06em;
+    color: var(--cream);
+    opacity: 0.62;
+    line-height: 1.4;
+  }
+  .score-card .breakdown b{
+    color: var(--gold-bright);
+    font-weight: 700;
+    opacity: 1;
+  }
+  .score-card.opp .breakdown b{
+    color: var(--silver);
+  }
+  .score-card .breakdown .neg{
+    color: var(--red-glow);
+    font-weight: 700;
+  }
+
+  /* ─── RECKONING title (big ceremony) ─── */
+  .reckoning-title{
+    position: relative;
+    text-align: center;
+    margin: 2px 0 0;
+  }
+  .reckoning-title .word{
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 0.34em;
+    color: var(--gold-bright);
+    text-shadow:
+      0 0 20px rgba(232,189,138,0.55),
+      0 0 40px rgba(212,165,116,0.30);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .reckoning-title .word::before,
+  .reckoning-title .word::after{
+    content: '';
+    display: inline-block;
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(212,165,116,0.7) 100%);
+  }
+  .reckoning-title .word::after{
+    background: linear-gradient(90deg, rgba(212,165,116,0.7) 0%, transparent 100%);
+  }
+  .reckoning-title .flourish{
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 10.5px;
+    color: var(--cream);
+    opacity: 0.7;
+    margin-top: 1px;
+    letter-spacing: 0.02em;
+  }
+  .reckoning-title .sub{
+    display: block;
+    margin-top: 2px;
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.14em;
+    color: var(--cream);
+    opacity: 0.55;
+  }
+  .reckoning-title .dir{
+    display: block;
+    margin-top: 3px;
+    font-family: 'Space Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.20em;
+    color: var(--gold-bright);
+    opacity: 0.85;
+  }
+
+  /* ─── shared court strip ─── */
+  .court-frame{
+    position: relative;
+    padding: 10px 8px 12px;
+    border-radius: 12px;
+    background:
+      linear-gradient(180deg, rgba(61,31,74,0.45) 0%, rgba(26,15,30,0.80) 100%);
+    border: 1px solid rgba(139,111,71,0.35);
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+  }
+  .court-frame::before,
+  .court-frame::after{
+    content: '';
+    position: absolute;
+    left: 12px; right: 12px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(212,165,116,0.35) 50%, transparent 100%);
+  }
+  .court-frame::before{ top: 3px; }
+  .court-frame::after{ bottom: 3px; }
+
+  .court-labels{
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 9px;
+    color: var(--cream);
+    opacity: 0.55;
+    padding: 0 4px;
+    margin-bottom: 8px;
+  }
+
+  .court-strip{
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 3px;
+    align-items: end;
+  }
+
+  .slot{
+    position: relative;
+    aspect-ratio: 40/58;
+    border-radius: 6px;
+    background: linear-gradient(180deg, #201125 0%, #10081a 100%);
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 1px 2px;
+    transition: transform 0.4s;
+  }
+  .slot .slot-num{
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 7.5px;
+    color: var(--cream);
+    opacity: 0.5;
+  }
+  .slot.mine{
+    border-color: var(--gold);
+    box-shadow: 0 0 10px rgba(212,165,116,0.25), inset 0 0 8px rgba(212,165,116,0.10);
+  }
+  .slot.opp{
+    border-color: var(--silver);
+    box-shadow: 0 0 8px rgba(192,192,192,0.18), inset 0 0 8px rgba(192,192,192,0.08);
+  }
+  .slot.unscored{
+    opacity: 0.40;
+    filter: saturate(0.5);
+  }
+
+  /* identity aura ring */
+  .aura{
+    position: absolute;
+    inset: -4px;
+    border-radius: 8px;
+    pointer-events: none;
+    opacity: 0;
+    box-shadow:
+      0 0 0 1px currentColor,
+      0 0 14px currentColor;
+    color: var(--gold);
+  }
+  .slot.scored .aura{ opacity: 0.55; }
+  .aura.royal{ color: var(--gold); }
+  .aura.thief{ color: var(--red-glow); }
+  .aura.scholar{ color: #7fa4bf; }
+  .aura.hunter{ color: var(--moss); }
+  .aura.mystic{ color: #a577c0; }
+
+  .slot .id-icon{
+    font-size: 14px;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .slot.royal .id-icon{ filter: drop-shadow(0 0 5px var(--gold)); }
+  .slot.thief .id-icon{ filter: drop-shadow(0 0 5px var(--red-glow)); }
+  .slot.scholar .id-icon{ filter: drop-shadow(0 0 5px #7fa4bf); }
+  .slot.hunter .id-icon{ filter: drop-shadow(0 0 5px var(--moss)); }
+  .slot.mystic .id-icon{ filter: drop-shadow(0 0 5px #a577c0); }
+
+  .slot .id-name{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 6.5px;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.05;
+    padding: 0 1px;
+    opacity: 0.85;
+  }
+
+  .slot .score-pop{
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 10px;
+    line-height: 1;
+    padding: 2px 3px;
+    border-radius: 3px;
+    background: rgba(0,0,0,0.5);
+    margin-bottom: 1px;
+  }
+  .slot.mine .score-pop{
+    color: var(--gold-bright);
+    text-shadow: 0 0 6px rgba(232,189,138,0.7);
+  }
+  .slot.opp .score-pop{
+    color: var(--silver);
+    text-shadow: 0 0 6px rgba(192,192,192,0.5);
+  }
+
+  /* currently-scoring slot: bigger, pulse ring, spotlight */
+  .slot.current{
+    transform: translateY(-4px) scale(1.15);
+    z-index: 3;
+  }
+  .slot.current::before{
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 10px;
+    border: 1.5px solid var(--gold-bright);
+    animation: ringPulse 1.6s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .slot.current::after{
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: -50px;
+    width: 70px;
+    height: 70px;
+    transform: translateX(-50%);
+    background: radial-gradient(50% 100% at 50% 100%, rgba(232,189,138,0.55) 0%, transparent 70%);
+    filter: blur(4px);
+    pointer-events: none;
+    animation: spotFlicker 2.4s ease-in-out infinite;
+  }
+  @keyframes ringPulse{
+    0%,100%{ box-shadow: 0 0 14px rgba(232,189,138,0.55), inset 0 0 8px rgba(232,189,138,0.25); }
+    50%{ box-shadow: 0 0 28px rgba(232,189,138,1), inset 0 0 16px rgba(232,189,138,0.5); }
+  }
+  @keyframes spotFlicker{
+    0%,100%{ opacity: 0.7; }
+    50%{ opacity: 1; }
+  }
+  .slot.current .score-pop{
+    animation: popEnter 0.9s ease-out both;
+    font-size: 12px;
+  }
+  @keyframes popEnter{
+    0%{ transform: translateY(6px) scale(0.6); opacity: 0; }
+    60%{ transform: translateY(-2px) scale(1.15); opacity: 1; }
+    100%{ transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  /* card face inner */
+  .slot .card-face{
+    position: relative;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 1px 1px;
+    background: linear-gradient(180deg, rgba(240,230,210,0.04) 0%, transparent 100%);
+    border-radius: 3px;
+  }
+
+  /* ─── scoring detail panel ─── */
+  .detail{
+    position: relative;
+    margin-top: 2px;
+    padding: 9px 11px 10px;
+    border-radius: 12px;
+    background:
+      linear-gradient(180deg, rgba(61,31,74,0.55) 0%, rgba(26,15,30,0.85) 100%);
+    border: 1px solid rgba(212,165,116,0.30);
+    box-shadow: inset 0 0 22px rgba(0,0,0,0.5);
+  }
+  .detail .row1{
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .detail .who-name{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--cream);
+  }
+  .detail .who-id{
+    font-family: 'Space Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    color: var(--gold-bright);
+    padding: 2px 5px;
+    border-radius: 999px;
+    border: 1px solid rgba(212,165,116,0.4);
+    background: rgba(212,165,116,0.10);
+  }
+  .detail .desc{
+    margin-top: 5px;
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5px;
+    color: var(--cream);
+    opacity: 0.82;
+    line-height: 1.4;
+  }
+  .detail .desc b{
+    color: var(--silver);
+    font-weight: 600;
+  }
+  .detail .chips{
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+  .chip-royal{
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-family: 'Space Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.10em;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: rgba(212,165,116,0.12);
+    border: 1px solid rgba(212,165,116,0.4);
+    color: var(--gold-bright);
+  }
+  .chip-royal .check{
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .detail .math{
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .detail .math .eq{
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--cream);
+    opacity: 0.72;
+  }
+  .detail .math .eq b{
+    color: var(--gold-bright);
+    font-weight: 700;
+  }
+  .detail .math .arrow{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--silver);
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(192,192,192,0.45);
+    background: rgba(192,192,192,0.08);
+  }
+
+  /* ─── exile benches ─── */
+  .benches{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 2px;
+  }
+  .bench{
+    position: relative;
+    padding: 7px 8px 8px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(26,15,30,0.75) 0%, rgba(10,5,15,0.85) 100%);
+    border: 1px dashed rgba(212,165,116,0.35);
+    min-height: 66px;
+  }
+  .bench.empty{
+    border-color: rgba(212,165,116,0.35);
+  }
+  .bench.penalty{
+    border: 1px solid rgba(139,0,0,0.65);
+    background: linear-gradient(180deg, rgba(50,10,10,0.75) 0%, rgba(20,5,5,0.85) 100%);
+    box-shadow: inset 0 0 20px rgba(139,0,0,0.35);
+  }
+  .bench .label{
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Space Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.10em;
+    color: var(--cream);
+    opacity: 0.75;
+  }
+  .bench.penalty .label{ color: #ffb0a8; opacity: 0.9; }
+  .bench .label b{
+    color: var(--gold-bright);
+  }
+  .bench.penalty .label b{
+    color: #ff8878;
+  }
+  .bench .exiles{
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .exile-card{
+    flex: 1;
+    padding: 4px 4px 5px;
+    border-radius: 4px;
+    border: 1px solid rgba(192,192,192,0.35);
+    background: linear-gradient(180deg, rgba(80,20,20,0.55) 0%, rgba(30,8,8,0.75) 100%);
+    filter: grayscale(0.35) brightness(0.75);
+    text-align: center;
+  }
+  .exile-card .ex-name{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 8px;
+    color: #f1c9c1;
+    line-height: 1.1;
+  }
+  .exile-card .ex-pen{
+    display: block;
+    margin-top: 2px;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 10px;
+    color: #ff6a5a;
+  }
+  .bench .empty-line{
+    margin-top: 10px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 10px;
+    color: var(--gold);
+    opacity: 0.55;
+    text-align: center;
+  }
+
+  /* ─── combo preview strip ─── */
+  .combos{
+    display: flex;
+    gap: 5px;
+    margin-top: 2px;
+  }
+  .combo{
+    flex: 1;
+    padding: 5px 6px 6px;
+    border-radius: 8px;
+    border: 1px solid rgba(139,111,71,0.35);
+    background: rgba(26,15,30,0.55);
+    text-align: center;
+    opacity: 0.55;
+  }
+  .combo.active{
+    opacity: 1;
+    border-color: rgba(212,165,116,0.7);
+    background: rgba(212,165,116,0.12);
+    box-shadow: 0 0 10px rgba(212,165,116,0.18);
+  }
+  .combo .cb-name{
+    font-family: 'Cinzel', serif;
+    font-weight: 500;
+    font-size: 8.5px;
+    letter-spacing: 0.10em;
+    color: var(--gold-bright);
+    text-transform: uppercase;
+  }
+  .combo.dim .cb-name{ color: var(--cream); opacity: 0.7; }
+  .combo .cb-state{
+    display: block;
+    margin-top: 1px;
+    font-family: 'Space Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 0.08em;
+    color: var(--cream);
+    opacity: 0.6;
+  }
+  .combo.active .cb-state{ color: var(--gold); opacity: 0.9; }
+
+  /* ─── bottom hint ─── */
+  .hint{
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 10.5px;
+    color: var(--cream);
+    opacity: 0.6;
+    margin-top: auto;
+    padding-top: 2px;
+  }
+  .hint .mono{
+    font-family: 'Space Mono', monospace;
+    font-style: normal;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    color: var(--gold-bright);
+    opacity: 0.85;
+    margin-right: 5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage-wrap">
+  <div class="warmth"></div>
+  <div class="glitter" id="glitter"></div>
+
+  <div class="stage">
+
+    <!-- ── header ── -->
+    <div class="topbar">
+      <div class="chip-num">07c · RECKONING</div>
+      <div class="chip-progress">// FINAL · <b>6/8</b></div>
+    </div>
+
+    <!-- ── live scoreboard ── -->
+    <div class="scoreboard">
+      <div class="score-card me">
+        <div class="who">
+          <div class="name">나</div>
+          <div class="lead">앞섬</div>
+        </div>
+        <div class="total">47</div>
+        <div class="breakdown">자리 <b>20</b> · 정체 <b>27</b> · 추방 <span class="neg">-0</span></div>
+      </div>
+      <div class="score-card opp">
+        <div class="who">
+          <div class="name">말콤 백작</div>
+        </div>
+        <div class="total">29</div>
+        <div class="breakdown">자리 <b>15</b> · 정체 <b>20</b> · 추방 <span class="neg">-6</span></div>
+      </div>
+    </div>
+
+    <!-- ── RECKONING ceremony title ── -->
+    <div class="reckoning-title">
+      <span class="word">RECKONING</span>
+      <span class="flourish">왕궁 채점 · 자리별 소유자에게 점수를</span>
+      <span class="sub">왼쪽 하석 → 오른쪽 상석 · 자리별 소유자 점수 반영</span>
+      <span class="dir">◀ 채점 방향 ▶</span>
+    </div>
+
+    <!-- ── THE SHARED COURT ── -->
+    <div class="court-frame">
+      <div class="court-labels">
+        <span>하석</span>
+        <span>· 왕궁 8자리 ·</span>
+        <span>상석</span>
+      </div>
+      <div class="court-strip">
+
+        <!-- Slot 1 · MY Royalty -->
+        <div class="slot mine royal scored">
+          <span class="slot-num">1</span>
+          <span class="aura royal"></span>
+          <div class="card-face">
+            <span class="id-icon">👑</span>
+            <span class="id-name">붉은<br/>나비</span>
+          </div>
+          <span class="score-pop">+12</span>
+        </div>
+
+        <!-- Slot 2 · OPP Thief -->
+        <div class="slot opp thief scored">
+          <span class="slot-num">2</span>
+          <span class="aura thief"></span>
+          <div class="card-face">
+            <span class="id-icon">🗡</span>
+            <span class="id-name">가스통<br/>자작</span>
+          </div>
+          <span class="score-pop">+2</span>
+        </div>
+
+        <!-- Slot 3 · MY Scholar -->
+        <div class="slot mine scholar scored">
+          <span class="slot-num">3</span>
+          <span class="aura scholar"></span>
+          <div class="card-face">
+            <span class="id-icon">📚</span>
+            <span class="id-name">은빛<br/>여우</span>
+          </div>
+          <span class="score-pop">+10</span>
+        </div>
+
+        <!-- Slot 4 · OPP Mystic -->
+        <div class="slot opp mystic scored">
+          <span class="slot-num">4</span>
+          <span class="aura mystic"></span>
+          <div class="card-face">
+            <span class="id-icon">🔮</span>
+            <span class="id-name">말론<br/>백작</span>
+          </div>
+          <span class="score-pop">+8</span>
+        </div>
+
+        <!-- Slot 5 · MY Hunter -->
+        <div class="slot mine hunter scored">
+          <span class="slot-num">5</span>
+          <span class="aura hunter"></span>
+          <div class="card-face">
+            <span class="id-icon">🏹</span>
+            <span class="id-name">미스터리<br/>손님</span>
+          </div>
+          <span class="score-pop">+8</span>
+        </div>
+
+        <!-- Slot 6 · OPP Royalty · CURRENTLY SCORING -->
+        <div class="slot opp royal scored current">
+          <span class="slot-num">6</span>
+          <span class="aura royal"></span>
+          <div class="card-face">
+            <span class="id-icon">👑</span>
+            <span class="id-name">에스텔<br/>부인</span>
+          </div>
+          <span class="score-pop">+9</span>
+        </div>
+
+        <!-- Slot 7 · MY Scholar · unscored -->
+        <div class="slot mine scholar unscored">
+          <span class="slot-num">7</span>
+          <span class="aura scholar"></span>
+          <div class="card-face">
+            <span class="id-icon">📚</span>
+            <span class="id-name">이반<br/>남작</span>
+          </div>
+        </div>
+
+        <!-- Slot 8 · MY Royalty · unscored -->
+        <div class="slot mine royal unscored">
+          <span class="slot-num">8</span>
+          <span class="aura royal"></span>
+          <div class="card-face">
+            <span class="id-icon">👑</span>
+            <span class="id-name">라오나<br/>신관</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── scoring detail panel ── -->
+    <div class="detail">
+      <div class="row1">
+        <span class="who-name">에스텔 부인</span>
+        <span class="who-id">👑 왕족</span>
+      </div>
+      <div class="desc">
+        왕궁 왕족 3명 총합 → 자리 6 소유자 <b>말콤 백작</b>에게 +9
+      </div>
+      <div class="chips">
+        <span class="chip-royal">👑 자리 1 <span class="check">✓</span></span>
+        <span class="chip-royal">👑 자리 6 <span class="check">✓</span></span>
+        <span class="chip-royal">👑 자리 8 <span class="check">✓</span></span>
+      </div>
+      <div class="math">
+        <div class="eq">표면 <b>+4</b> + 정체 <b>+5</b> → <b>+9</b></div>
+        <div class="arrow">→ 말콤</div>
+      </div>
+    </div>
+
+    <!-- ── exile benches ── -->
+    <div class="benches">
+      <div class="bench empty">
+        <div class="label"><span>내 추방석</span><span><b>0장</b> · 페널티 0</span></div>
+        <div class="empty-line">— 비어있음 —</div>
+      </div>
+      <div class="bench penalty">
+        <div class="label"><span>말콤 추방석</span><span><b>2장</b> · 페널티 -6</span></div>
+        <div class="exiles">
+          <div class="exile-card">
+            <span class="ex-name">루비아나<br/>부인</span>
+            <span class="ex-pen">-3</span>
+          </div>
+          <div class="exile-card">
+            <span class="ex-name">은빛<br/>여우</span>
+            <span class="ex-pen">-3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── combo preview ── -->
+    <div class="combos">
+      <div class="combo dim">
+        <div class="cb-name">🏰 왕궁 지배</div>
+        <span class="cb-state">6+ 자리</span>
+      </div>
+      <div class="combo dim">
+        <div class="cb-name">👑 가문 위엄</div>
+        <span class="cb-state">한 정체 4+</span>
+      </div>
+      <div class="combo active">
+        <div class="cb-name">🎭 완벽 무도회</div>
+        <span class="cb-state">5정체 완성</span>
+      </div>
+    </div>
+
+    <!-- ── hint ── -->
+    <div class="hint">
+      <span class="mono">//</span>
+      6번째 자리 채점 중… 계속 →
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // floating gold dust
+  (function(){
+    const g = document.getElementById('glitter');
+    const N = 22;
+    for(let i=0;i<N;i++){
+      const s = document.createElement('span');
+      const x = Math.random()*375;
+      const dx = (Math.random()*40 - 20).toFixed(1);
+      const dur = 6 + Math.random()*5;
+      const delay = -Math.random()*8;
+      const size = 1 + Math.random()*1.6;
+      s.style.left = x + 'px';
+      s.style.width = size + 'px';
+      s.style.height = size + 'px';
+      s.style.animationDuration = dur.toFixed(2) + 's';
+      s.style.animationDelay = delay.toFixed(2) + 's';
+      s.style.setProperty('--dx', dx + 'px');
+      s.style.opacity = 0.55 + Math.random()*0.35;
+      g.appendChild(s);
+    }
+  })();
+
+  // re-trigger score pop animation loop for visibility
+  (function(){
+    const el = document.querySelector('.slot.current .score-pop');
+    if(!el) return;
+    setInterval(()=>{
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = '';
+    }, 2600);
+  })();
+</script>
+
+</body>
+</html>
